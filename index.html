@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Brian × Maths 3ème</title>
+<title>Brian × Maths 4ème</title>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -386,9 +386,7 @@ h1 .maths{color:var(--accent);}
   <div class="w-subtitle">Brian × Arya</div>
   <div class="w-progress"><div class="w-prog-fill" id="w-prog-fill" style="width:0%"></div></div>
   <div class="w-prog-label" id="w-prog-label">0€ / 5€</div>
-  <button class="w-coupon-btn" id="w-coupon-btn" onclick="useCoupon()" disabled>
-    💳 Utiliser mon coupon (5€ requis)
-  </button>
+  <button class="w-coupon-btn" id="w-coupon-btn" onclick="useCoupon()" disabled>💳 Utiliser mon coupon (5€ requis)</button>
   <div class="w-coupon-note">Collecte 5€ pour débloquer le coupon Robux !</div>
   <div class="w-history" id="w-history"></div>
   <button class="w-close" onclick="closeWallet()">Fermer</button>
@@ -411,12 +409,12 @@ h1 .maths{color:var(--accent);}
     </div>
   </div>
   <div class="dance-caption">Arya danse pour toi 🐾💃</div>
-  <div class="dance-reset-note">⚠️ Après avoir utilisé le coupon, ton solde sera remis à 0€</div>
+  <div class="dance-reset-note">⚠️ Solde remis à 0€ après utilisation</div>
   <button class="dance-close" onclick="closeDance()">📸 Capturer & Utiliser le coupon</button>
 </div>
 </div>
 
-<!-- ARYA REWARD (correct) -->
+<!-- ARYA REWARD -->
 <div class="arya-ol" id="arya-ol">
 <div class="arya-pop">
   <img id="arya-img" src="" alt="Arya">
@@ -434,13 +432,13 @@ h1 .maths{color:var(--accent);}
 <div class="bonus-pop">
   <div class="b-star">⚡</div>
   <h3>Bonus Vitesse !</h3>
-  <div class="b-sub">Tu réponds super vite ! Collecte 3 bonus pour +0.50€</div>
+  <div class="b-sub">Tu réponds vite ! 3 bonus = +0.50€</div>
   <div class="bonus-progress">
     <div class="bp-dot" id="bp-1"></div>
     <div class="bp-dot" id="bp-2"></div>
     <div class="bp-dot" id="bp-3"></div>
   </div>
-  <div class="bonus-reward" id="bonus-reward-msg">🎉 +0.50€ Robux bonus !</div>
+  <div class="bonus-reward" id="bonus-reward-msg">🎉 +0.50€ Robux !</div>
   <button class="bonus-close" onclick="closeBonusCard()">Super ! →</button>
 </div>
 </div>
@@ -467,7 +465,7 @@ h1 .maths{color:var(--accent);}
     <img id="expl-cat" src="" alt="Arya">
     <div class="arya-tip" id="expl-tip"></div>
   </div>
-  <button class="expl-close" onclick="closeExpl()">Réessayer ce type de question →</button>
+  <button class="expl-close" onclick="closeExpl()">Réessayer ce type →</button>
 </div>
 </div>
 
@@ -478,14 +476,30 @@ h1 .maths{color:var(--accent);}
   <div class="pun-sub">// Tu as reçu un ticket de corvée, Brian !</div>
   <div class="pun-ticket">
     <div class="pun-icon" id="pun-icon">🚽</div>
-    <div class="pun-label" id="pun-label">Nettoyer les toilettes</div>
-    <div class="pun-issued">Émis par : Maman & Arya 🐾</div>
+    <div class="pun-label" id="pun-label">Corvée</div>
+    <div class="pun-issued">Émis par : Maman &amp; Arya 🐾</div>
     <div class="pun-code" id="pun-code">Code : ---</div>
   </div>
   <button class="pun-close" onclick="closePunishment()">J'ai compris... 😔</button>
 </div>
 </div>
 
+
+<!-- DEDUCT NOTICE -->
+<div class="modal-ol" id="deduct-ol" style="z-index:500">
+<div style="background:var(--bg3);border:2px solid var(--red);border-radius:18px;
+  padding:22px 24px;max-width:340px;width:100%;text-align:center;
+  animation:popUp .35s cubic-bezier(.34,1.56,.64,1);">
+  <div style="font-size:2rem;margin-bottom:8px">💸</div>
+  <div style="font-family:var(--mono);font-size:.6rem;letter-spacing:2px;color:var(--red);text-transform:uppercase;margin-bottom:6px">Pénalité</div>
+  <div style="font-size:1.3rem;font-weight:800;color:var(--red);margin-bottom:6px">−0.50€</div>
+  <div style="font-family:var(--mono);font-size:.68rem;color:var(--muted);margin-bottom:14px" id="deduct-balance">Solde restant : 0€</div>
+  <button onclick="document.getElementById('deduct-ol').classList.remove('show')"
+    style="background:rgba(248,113,113,.1);border:1px solid var(--red);border-radius:8px;
+    color:var(--red);font-family:var(--mono);font-size:.68rem;letter-spacing:2px;
+    text-transform:uppercase;padding:9px 22px;cursor:pointer;">OK</button>
+</div>
+</div>
 <!-- WALLET BTN -->
 <div class="wallet-btn" onclick="openWallet()">
   <div class="w-pulse"></div>
@@ -495,8 +509,8 @@ h1 .maths{color:var(--accent);}
 <!-- HEADER -->
 <header>
   <div class="badge"><img id="badge-img" src="" alt="Arya"><span>Arya supervise 🐾</span></div>
-  <h1><span class="brian">Brian</span><span class="x">×</span><span class="maths">Maths 3ème</span></h1>
-  <p class="tagline">// chapitres · facile→difficile · robux rewards · corvées si 3 erreurs</p>
+  <h1><span class="brian">Brian</span><span class="x">×</span><span class="maths">Maths 4ème</span></h1>
+  <p class="tagline">// 4ème collège · chapitres · robux rewards · corvées si 3 erreurs</p>
 </header>
 
 <!-- SCREEN CAT -->
@@ -588,7 +602,7 @@ h1 .maths{color:var(--accent);}
   <div style="font-family:var(--mono);font-size:.65rem;color:var(--warn);margin-bottom:6px" id="res-note"></div>
   <div id="res-coupon" style="display:none">
     <div class="robux-coupon">
-      <div class="rbx-logo">⬛ Robux Reward · Brian</div>
+      <div class="rbx-logo">⬛ Robux Reward · Brian 4ème</div>
       <div class="rbx-amount" id="cpn-amt">1€</div>
       <div class="rbx-lbl">de Robux gagné !</div>
       <img class="rbx-cat" id="cpn-cat" src="" alt="Arya">
@@ -620,7 +634,7 @@ const QUOTES=[
   {q:"On ne voit bien qu'avec le cœur. L'essentiel est invisible pour les yeux.",a:"Saint-Exupéry, Le Petit Prince"},
   {q:"Tout ce qui est grand est difficile autant que rare.",a:"Spinoza"},
   {q:"La connaissance s'acquiert par l'expérience, tout le reste n'est que de l'information.",a:"Einstein"},
-  {q:"Ce n'est pas parce que les choses sont difficiles que nous n'osons pas, c'est parce que nous n'osons pas qu'elles sont difficiles.",a:"Sénèque"},
+  {q:"Ce n'est pas parce que les choses sont difficiles que nous n'osons pas.",a:"Sénèque"},
   {q:"Les mathématiques sont la reine des sciences.",a:"C.F. Gauss"},
   {q:"La lecture est à l'esprit ce que l'exercice est au corps.",a:"R. Steele"},
   {q:"Je pense, donc je suis.",a:"Descartes"},
@@ -645,24 +659,21 @@ const PUNISHMENTS=[
   {label:"Pas d'ordinateur pendant 1 jour !",icon:"💻",sev:3},
 ];
 
-// ── STATE ─────────────────────────────────────────
+// ── PERSISTENT STATE ──────────────────────────────
 let curCat=null,curDiff=null;
 let qNum=0,score=0,streak=0,maxStreak=0,lives=3;
 let correct=0,answered=false;
 let timerInt=null,timeLeft=20,qStartTime=0;
 let _start=Date.now();
-// PERSISTENT across categories:
 let totalScore=0,totalEarned=0,coupons=[],curCoupon=null;
-let speedBonusCount=0; // bonus cards collected this diff session
-let facileAllFast=true; // track if all facile answers were fast
-// Retry tracking: {catId+diff+type: wrongCount}
+let speedBonusCount=0,facileAllFast=true;
 let wrongCounts={};
-// Session question history to avoid repeats (per cat+diff combo)
-let questionSeeds={};
+let consecutiveWrong=0;
+let _retryQ=null;
 
 const DIFF_CONFIG={
-  facile:{qs:8,time:20,reward:0,passRatio:0.7},
-  moyen:{qs:10,time:30,reward:1,passRatio:0.9},
+  facile:{qs:8,time:20,reward:0.5,passRatio:1.0},
+  moyen:{qs:10,time:30,reward:1,passRatio:1.0},
   difficile:{qs:12,time:30,reward:2,passRatio:1.0}
 };
 
@@ -678,13 +689,256 @@ function wf(n,d,count){
   const used=new Set([simp(n,d).join('/')]);const res=[];
   const tries=[[n+1,d],[n-1,d],[n,d+1],[n,d-1],[n+2,d],[n,d+2],[n+1,d+1],[n*2,d],[n,d*2]];
   for(let[wn,wd]of tries){if(res.length>=count)break;if(wn>0&&wd>0){const k=simp(wn,wd).join('/');if(!used.has(k)){used.add(k);res.push({n:wn,d:wd});}}}
-  while(res.length<count){const wn=rand(1,12),wd=rand(1,12);const k=simp(wn,wd).join('/');const ck=simp(n,d).join('/');if(!used.has(k)&&k!==ck){used.add(k);res.push({n:wn,d:wd});}}
+  while(res.length<count){const wn=rand(1,12),wd=rand(1,12);const k=simp(wn,wd).join('/');if(!used.has(k)){used.add(k);res.push({n:wn,d:wd});}}
   return res.slice(0,count);
 }
-
 document.getElementById('badge-img').src=ARYA_IMGS[0];
 
+// ══════════════════════════════════════════════════
+// 4ème QUESTION GENERATORS
+// ══════════════════════════════════════════════════
 
+// ── FRACTIONS & PROPORTIONNALITÉ (fr) ────────────
+function genFr(){
+  const lv=curDiff;
+  if(lv==='facile'){
+    // Pourcentage simple
+    const p=pick([10,20,25,50,75]);const N=rand(2,20)*4;
+    const res=N*p/100;
+    const w=[res+p/10,res-p/10,res+N/10,N-res].filter(v=>v>0&&v!==res).slice(0,3);
+    return{text:`Calcule ${p}% de ${N}.`,math:'',
+      choices:sh([{v:res,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>v,subtype:'pct',
+      explain:{answer:`${p}% de ${N} = ${res}`,steps:[
+        {num:'Méthode',text:`${p}% = ${p}/100`,math:`${N} × ${p} ÷ 100 = ${res}`}],
+        tip:'p% de N = N × p ÷ 100. Astuce : 50%=÷2, 25%=÷4, 10%=÷10.'}};
+  }
+  if(lv==='moyen'){
+    // Addition de fractions dénominateurs différents
+    const d1=rand(2,6),d2=rand(2,6);
+    if(d1===d2)return genFr();
+    const n1=rand(1,d1-1),n2=rand(1,d2-1);
+    const L=lcm(d1,d2);const rn=n1*(L/d1)+n2*(L/d2);
+    const[sn,sd]=simp(rn,L);const w=wf(sn,sd,3);
+    return{text:'Calcule et simplifie.',math:`${F(n1,d1)} ${OP('+')} ${F(n2,d2)}`,
+      choices:sh([{v:`${sn}/${sd}`,ok:true},...w.map(x=>({v:`${x.n}/${x.d}`,ok:false}))]),
+      fmt:v=>{const[a,b]=v.split('/');return F(a,b);},subtype:'add',
+      explain:{answer:F(sn,sd),steps:[
+        {num:'PPCM',text:`PPCM(${d1},${d2}) = ${L}`,math:`${F(n1*(L/d1),L)} + ${F(n2*(L/d2),L)}`},
+        {num:'Addition',text:'',math:`${F(rn,L)} = ${F(sn,sd)}`}],
+        tip:'Même dénominateur avant d\'additionner. PPCM = plus petit commun multiple.'}};
+  }
+  // Règle de trois (proportionnalité)
+  const a=rand(2,8),b=rand(3,12)*a,c=rand(2,8);
+  const x=b*c/a;
+  if(!Number.isInteger(x))return genFr();
+  const w=[x+1,x-1,x+2,x-2].filter(v=>v>0&&v!==x).slice(0,3);
+  return{text:`${a} articles coûtent ${b}€. Combien coûtent ${c} articles ?`,math:'',
+    choices:sh([{v:x,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>`${v}€`,subtype:'prop',
+    explain:{answer:`${x}€`,steps:[
+      {num:'Prix unitaire',text:`${b}÷${a}`,math:`1 article = ${b/a}€`},
+      {num:'Pour ${c}',text:'',math:`${b/a} × ${c} = ${x}€`}],
+      tip:'Règle de trois : valeur cherchée = (valeur connue × quantité souhaitée) ÷ quantité de référence.'}};
+}
+
+// ── ALGÈBRE & ÉQUATIONS (al) ──────────────────────
+// 4ème: calcul littéral, équations, inéquations
+function genAl(){
+  const lv=curDiff;
+  if(lv==='facile'){
+    // Évaluer une expression pour x donné
+    const a=rand(2,6),b=rand(1,8),val=rand(1,6);
+    const res=a*val+b;
+    const w=[res+1,res-1,res+2,a*val].filter(v=>v!==res).slice(0,3);
+    return{text:`Calcule pour x = ${val}.`,math:`${a}x + ${b}`,
+      choices:sh([{v:res,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>v,subtype:'eval',
+      explain:{answer:`${res}`,steps:[
+        {num:'Substitution',text:`Remplace x par ${val}.`,math:`${a}×${val}+${b}=${a*val}+${b}=${res}`}],
+        tip:'Calculer la valeur numérique : remplacer la lettre par le nombre, puis calculer.'}};
+  }
+  if(lv==='moyen'){
+    // Résoudre ax + b = c
+    const a=rand(2,6),b=rand(-8,8),c=rand(-10,10);
+    const xn=c-b;if(xn%a!==0)return genAl();const xv=xn/a;
+    const w=[xv+1,xv-1,xv+2,xv-2].filter(v=>v!==xv).slice(0,3);
+    return{text:"Résous l'équation.",math:`${a}x ${b>=0?'+ ':''}${b} = ${c}`,
+      choices:sh([{v:xv,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>`x = ${v}`,subtype:'eq1',
+      explain:{answer:`x = ${xv}`,steps:[
+        {num:'Isoler x',text:`Soustrait ${b} des deux membres.`,math:`${a}x = ${c-b}`},
+        {num:'Diviser',text:`Divise par ${a}.`,math:`x = ${xv}`},
+        {num:'Vérif',text:'',math:`${a}×${xv}+${b}=${a*xv+b} ✓`}],
+        tip:'ax+b=c → x=(c−b)/a. Toujours vérifier en substituant !'}};
+  }
+  // Développer une expression — identités remarquables (pré-2nde)
+  const a=rand(1,5),b=rand(1,5);const r1=a*a,r2=2*a*b,r3=b*b;
+  const correct=`${r1}x²+${r2}x+${r3}`;
+  const w=[`${r1}x²+${a*b}x+${r3}`,`${r1}x²+${r2}x+${r3+1}`,`${r1+1}x²+${r2}x+${r3}`];
+  return{text:"Développe avec l'identité remarquable.",math:`(${a}x + ${b})²`,
+    choices:sh([{v:correct,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>v,subtype:'ir',
+    explain:{answer:correct,steps:[
+      {num:'(a+b)²=a²+2ab+b²',text:`a=${a}x, b=${b}`,math:`(${a}x)²+2×${a}x×${b}+(${b})²`},
+      {num:'Résultat',text:'',math:correct}],
+      tip:'Identités : (a+b)²=a²+2ab+b² · (a-b)²=a²-2ab+b² · (a+b)(a-b)=a²-b²'}};
+}
+
+// ── GÉOMÉTRIE (ge) ────────────────────────────────
+// 4ème: Pythagore, Thalès, angles dans le triangle
+function genGe(){
+  const lv=curDiff;
+  if(lv==='facile'){
+    // Angles dans un triangle
+    const a1=rand(30,80),a2=rand(20,80);const a3=180-a1-a2;
+    if(a3<=0||a3>=180)return genGe();
+    const w=[a3+5,a3-5,a3+10,a3-10].filter(v=>v>0&&v<180&&v!==a3).slice(0,3);
+    return{text:'Somme des angles = 180°. Trouve le 3ème angle.',math:`α=${a1}°,  β=${a2}°,  γ=?`,
+      choices:sh([{v:a3,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>`γ=${v}°`,subtype:'tri',
+      explain:{answer:`γ=${a3}°`,steps:[
+        {num:'Règle fondamentale',text:'α+β+γ=180° dans tout triangle.',math:`γ=180°−${a1}°−${a2}°=${a3}°`}],
+        tip:'Propriété incontournable : la somme des angles d\'un triangle est toujours 180°.'}};
+  }
+  if(lv==='moyen'){
+    // Pythagore — trouver l'hypoténuse ou un côté
+    const pyts=[[3,4,5],[5,12,13],[6,8,10],[8,15,17],[9,12,15],[7,24,25]];
+    const[a,b,c]=pick(pyts);
+    const t=pick(['hyp','leg']);
+    if(t==='hyp'){
+      const w=[c+1,c-1,c+2].filter(v=>v>0&&v!==c).slice(0,3);
+      return{text:"Triangle rectangle. Calcule l'hypoténuse.",math:`a=${a} cm,  b=${b} cm`,
+        choices:sh([{v:c,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>`c=${v} cm`,subtype:'pyth',
+        explain:{answer:`c=${c} cm`,steps:[
+          {num:'Pythagore',text:'c²=a²+b²',math:`${a}²+${b}²=${a*a+b*b}`},
+          {num:'Racine',text:'',math:`c=√${a*a+b*b}=${c} cm`}],
+          tip:'c²=a²+b² : l\'hypoténuse est en face de l\'angle droit. On extrait ensuite la racine carrée.'}};
+    }
+    const w2=[a+1,a-1,a+2].filter(v=>v>0&&v!==a).slice(0,3);
+    return{text:"Triangle rectangle. Trouve le côté manquant.",math:`Hypoténuse=${c} cm,  côté=${b} cm`,
+      choices:sh([{v:a,ok:true},...w2.map(v=>({v,ok:false}))]),fmt:v=>`côté=${v} cm`,subtype:'pyth2',
+      explain:{answer:`côté=${a} cm`,steps:[
+        {num:'Pythagore',text:'a²=c²−b²',math:`${c}²−${b}²=${c*c-b*b}`},
+        {num:'Racine',text:'',math:`a=√${c*c-b*b}=${a} cm`}],
+        tip:'Pour un côté: a²=c²−b². Toujours repérer l\'hypoténuse (face à l\'angle droit) d\'abord.'}};
+  }
+  // Thalès
+  const AB=rand(4,12),AC=rand(4,12),AD=rand(2,AB-1);
+  const AE=Math.round(AD*AC/AB*10)/10;
+  const w=[+(AE+0.5).toFixed(1),+(AE-0.5).toFixed(1),+(AE+1).toFixed(1)].filter(v=>v>0&&v!==AE).slice(0,3);
+  return{text:'(DE)∥(BC). Calcule AE (théorème de Thalès).',math:`AB=${AB},  AC=${AC},  AD=${AD}`,
+    choices:sh([{v:AE,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>`AE=${v}`,subtype:'thales',
+    explain:{answer:`AE=${AE}`,steps:[
+      {num:'Thalès',text:'AD/AB = AE/AC',math:`${AD}/${AB}=AE/${AC}`},
+      {num:'Résoudre',text:'',math:`AE=${AD}×${AC}÷${AB}=${AE}`}],
+      tip:'Thalès : les rapports de longueurs sont égaux quand les droites sont parallèles.'}};
+}
+
+// ── STATISTIQUES & PROBABILITÉS (st) ──────────────
+// 4ème: fréquences, moyenne, probabilités expérimentales/théoriques
+function genSt(){
+  const lv=curDiff;
+  if(lv==='facile'){
+    // Fréquence en pourcentage
+    const total=rand(20,50);const fav=rand(1,total-1);
+    const pct=Math.round(fav/total*100);
+    const w=[pct+5,pct-5,pct+10,Math.round(fav*2/total*100)].filter(v=>v>=0&&v<=100&&v!==pct).slice(0,3);
+    return{text:`${total} élèves, ${fav} ont eu la moyenne. Fréquence en % ?`,math:'',
+      choices:sh([{v:pct,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>`${v}%`,subtype:'freq',
+      explain:{answer:`${pct}%`,steps:[
+        {num:'Fréquence',text:'f = effectif partiel ÷ effectif total × 100',math:`${fav}÷${total}×100≈${pct}%`}],
+        tip:'Fréquence % = (effectif ÷ total) × 100. Résultat toujours entre 0% et 100%.'}};
+  }
+  if(lv==='moyen'){
+    // Moyenne simple
+    const n=rand(4,6);const vals=Array.from({length:n},()=>rand(4,18));
+    const sum=vals.reduce((a,b)=>a+b,0);const mean=Math.round(sum/n*10)/10;
+    const w=[+(mean+.5).toFixed(1),+(mean-.5).toFixed(1),+(mean+1).toFixed(1)].filter(v=>v!==mean).slice(0,3);
+    return{text:'Calcule la moyenne de ces valeurs.',math:vals.join(' ; '),
+      choices:sh([{v:mean,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>`Moy = ${v}`,subtype:'mean',
+      explain:{answer:`Moyenne = ${mean}`,steps:[
+        {num:'Somme',text:'',math:`${vals.join('+')}=${sum}`},
+        {num:'Diviser',text:`par ${n}`,math:`${sum}÷${n}=${mean}`}],
+        tip:'Moyenne = somme de toutes les valeurs ÷ nombre de valeurs.'}};
+  }
+  // Probabilité
+  const total=rand(10,24);const fav=rand(1,total-1);
+  const[sn,sd]=simp(fav,total);const w=wf(sn,sd,3);
+  return{text:`Sac: ${total} billes, ${fav} rouges. Probabilité de tirer rouge ?`,math:'',
+    choices:sh([{v:`${sn}/${sd}`,ok:true},...w.map(x=>({v:`${x.n}/${x.d}`,ok:false}))]),
+    fmt:v=>{const[a,b]=v.split('/');return F(a,b);},subtype:'proba',
+    explain:{answer:F(sn,sd),steps:[
+      {num:'P = favorables / total',text:'',math:`${fav}÷${total}=${sn}/${sd}`}],
+      tip:'Probabilité entre 0 et 1. P=0 impossible, P=1 certain. Toujours simplifier la fraction !'}};
+}
+
+// ── NOMBRES RELATIFS & PUISSANCES (no) ────────────
+// 4ème: opérations sur Z, PGCD, puissances entières
+function genNo(){
+  const lv=curDiff;
+  if(lv==='facile'){
+    // Nombres relatifs — opérations
+    const a=rand(-8,8)||1,b=rand(-8,8)||1;
+    const op=pick(['+','-','×']);
+    const res=op==='+'?a+b:op==='-'?a-b:a*b;
+    const w=[res+1,res-1,res+2,res-2].filter(v=>v!==res).slice(0,3);
+    return{text:'Calcule (nombres relatifs).',math:`(${a}) ${op} (${b})`,
+      choices:sh([{v:res,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>v,subtype:'rel',
+      explain:{answer:`= ${res}`,steps:[
+        op==='×'?{num:'Règle signe ×',text:'(+)×(+)=(+) · (−)×(−)=(+) · signes ≠ → (−)',math:`${a}×${b}=${res}`}
+        :{num:'Calcul',text:`Placer sur la droite numérique.`,math:`(${a})${op}(${b})=${res}`}],
+        tip:'×: même signe→(+), signes différents→(−). Addition: utiliser la droite numérique.'}};
+  }
+  if(lv==='moyen'){
+    // PGCD par décomposition ou Euclide
+    const b=rand(2,8),k=rand(2,5),r=rand(1,b-1);const a=b*k+r;
+    const g=gcd(a,b);
+    const w=[g+1,g===1?2:g-1,b,Math.min(a,b)].filter(v=>v>0&&v!==g&&v!==g+1).slice(0,3);
+    return{text:`Calcule le PGCD de ${a} et ${b}.`,math:'',
+      choices:sh([{v:g,ok:true},...w.slice(0,3).map(v=>({v,ok:false}))]),fmt:v=>`PGCD=${v}`,subtype:'pgcd',
+      explain:{answer:`PGCD(${a},${b})=${g}`,steps:[
+        {num:'Euclide',text:`${a}=${Math.floor(a/b)}×${b}+${a%b}`,math:`reste=${a%b}`},
+        {num:'PGCD(${b},${a%b})',text:'Continuer jusqu\'au reste 0.',math:`PGCD=${g}`}],
+        tip:'Algorithme d\'Euclide: PGCD(a,b)=PGCD(b,reste). Répéter jusqu\'au reste 0.'}};
+  }
+  // Puissances entières
+  const base=pick([2,3,4,5,10]);const n=rand(1,4),m=rand(1,3);
+  const op=pick(['mult','div','pow']);
+  if(op==='mult'){
+    const correct=`${base}^${n+m}`;
+    const w=[`${base}^${n*m}`,`${base+1}^${n+m}`,`${base}^${Math.max(1,n-m)}`];
+    return{text:'Simplifie.',math:`${base}^${n} × ${base}^${m}`,
+      choices:sh([{v:correct,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>v,subtype:'pow',
+      explain:{answer:correct,steps:[
+        {num:'Règle produit',text:'Même base → additionner les exposants.',math:`${base}^${n}×${base}^${m}=${base}^${n+m}`}],
+        tip:'aⁿ×aᵐ=aⁿ⁺ᵐ · aⁿ÷aᵐ=aⁿ⁻ᵐ · (aⁿ)ᵐ=aⁿˣᵐ · a⁰=1'}};
+  }
+  if(op==='div'&&n>m){
+    const correct=`${base}^${n-m}`;
+    const w=[`${base}^${n+m}`,`${base}^${n*m}`,`${base}^${n}`];
+    return{text:'Simplifie.',math:`${base}^${n} ÷ ${base}^${m}`,
+      choices:sh([{v:correct,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>v,subtype:'pow',
+      explain:{answer:correct,steps:[
+        {num:'Règle quotient',text:'Même base → soustraire les exposants.',math:`${base}^${n-m}`}],
+        tip:'aⁿ÷aᵐ=aⁿ⁻ᵐ (base identique obligatoire !)'}};
+  }
+  // (aⁿ)ᵐ
+  const correct2=`${base}^${n*m}`;
+  const w2=[`${base}^${n+m}`,`${base+1}^${n*m}`,`${base}^${n}`];
+  return{text:'Simplifie.',math:`(${base}^${n})^${m}`,
+    choices:sh([{v:correct2,ok:true},...w2.map(v=>({v,ok:false}))]),fmt:v=>v,subtype:'pow',
+    explain:{answer:correct2,steps:[
+      {num:'Règle puissance',text:'Puissance d\'une puissance → multiplier.',math:`(${base}^${n})^${m}=${base}^${n*m}`}],
+      tip:'(aⁿ)ᵐ=aⁿˣᵐ : multiplier les exposants.'}};
+}
+
+const CATS=[
+  {id:'fr',icon:'½',name:'Fractions & %',cls:'cc-fr',desc:'Fractions, pourcentages, proportionnalité'},
+  {id:'al',icon:'x²',name:'Algèbre',cls:'cc-al',desc:'Calcul littéral, équations, identités'},
+  {id:'ge',icon:'△',name:'Géométrie',cls:'cc-ge',desc:'Angles, Pythagore, Thalès'},
+  {id:'st',icon:'📊',name:'Stats & Proba',cls:'cc-st',desc:'Fréquences, moyenne, probabilités'},
+  {id:'no',icon:'ℤ',name:'Nombres & Puissances',cls:'cc-py',desc:'Nombres relatifs, PGCD, puissances'},
+];
+const GENS={fr:genFr,al:genAl,ge:genGe,st:genSt,no:genNo};
+
+// ══════════════════════════════════════════════════
+// SCREEN LOGIC
+// ══════════════════════════════════════════════════
 function show(id){['cat','diff','game','result'].forEach(s=>{
   document.getElementById('screen-'+s).style.display='none';});
   document.getElementById('screen-'+id).style.display='block';}
@@ -711,27 +965,24 @@ function selectCat(id){
 }
 function startGame(diff){
   curDiff=diff;qNum=0;score=0;streak=0;maxStreak=0;lives=3;correct=0;answered=false;
-  speedBonusCount=0;facileAllFast=true;
-  _start=Date.now();curCoupon=null;
+  speedBonusCount=0;facileAllFast=true;_start=Date.now();curCoupon=null;consecutiveWrong=0;
   document.getElementById('s-score').textContent=totalScore;
   document.getElementById('s-streak').textContent=0;
   document.getElementById('s-lives').textContent='❤❤❤';
-  document.getElementById('s-bonus').textContent=speedBonusCount+'/3';
+  document.getElementById('s-bonus').textContent='0/3';
   const dp=document.getElementById('dpill');
   dp.className='diff-pill '+(diff==='facile'?'dp-f':diff==='moyen'?'dp-m':'dp-d');
   dp.textContent=diff==='facile'?'Facile':diff==='moyen'?'Moyen':'Difficile';
-  updateRetryBar(null);
-  show('game');nextQ();
+  updateRetryBar(null);show('game');nextQ();
 }
 
-
+// TIMER
 function startTimer(secs){
   clearInterval(timerInt);timeLeft=secs;qStartTime=Date.now();updateTimer();
-  timerInt=setInterval(()=>{timeLeft--;updateTimer();
-    if(timeLeft<=0){clearInterval(timerInt);if(!answered)timeUp();}},1000);
+  timerInt=setInterval(()=>{timeLeft--;updateTimer();if(timeLeft<=0){clearInterval(timerInt);if(!answered)timeUp();}},1000);
 }
 function updateTimer(){
-  const cfg=DIFF_CONFIG[curDiff];const pct=timeLeft/cfg.time*100;
+  const pct=timeLeft/DIFF_CONFIG[curDiff].time*100;
   document.getElementById('t-num').textContent=timeLeft;
   document.getElementById('t-fill').style.width=pct+'%';
   const w=timeLeft<=5;
@@ -746,236 +997,26 @@ function timeUp(){
   doWrong(window._cq,true);
   document.getElementById('nxt-btn').classList.add('on');
 }
-function wasAnsweredFast(){
-  const elapsed=(Date.now()-qStartTime)/1000;
-  const threshold=DIFF_CONFIG[curDiff].time*(2/3);
-  return elapsed<=threshold;
-}
+function wasAnsweredFast(){return(Date.now()-qStartTime)/1000<=DIFF_CONFIG[curDiff].time*(2/3);}
 
-
-function retryKey(subtype){return (curCat?curCat.id:'?')+'|'+curDiff+'|'+(subtype||'q');}
-function getWrongCount(subtype){return wrongCounts[retryKey(subtype)]||0;}
-function incWrongCount(subtype){const k=retryKey(subtype);wrongCounts[k]=(wrongCounts[k]||0)+1;return wrongCounts[k];}
-function resetWrongCount(subtype){wrongCounts[retryKey(subtype)]=0;}
-function updateRetryBar(subtype){
+// RETRY TRACKING
+function retryKey(sub){return(curCat?curCat.id:'?')+'|'+curDiff+'|'+(sub||'q');}
+function getWC(sub){return wrongCounts[retryKey(sub)]||0;}
+function incWC(sub){const k=retryKey(sub);wrongCounts[k]=(wrongCounts[k]||0)+1;return wrongCounts[k];}
+function resetWC(sub){wrongCounts[retryKey(sub)]=0;}
+function updateRetryBar(sub){
   const bar=document.getElementById('retry-bar');
-  if(!subtype){bar.style.display='none';return;}
-  const cnt=getWrongCount(subtype);
+  if(!sub){bar.style.display='none';return;}
+  const cnt=getWC(sub);
   if(cnt===0){bar.style.display='none';return;}
   bar.style.display='flex';
-  const dots=document.getElementById('retry-dots');
-  dots.innerHTML=[0,1,2].map(i=>`<div class="retry-dot ${i<cnt?'wrong':''} ${cnt>=2&&i===cnt-1?'danger':''}"></div>`).join('');
+  document.getElementById('retry-dots').innerHTML=[0,1,2].map(i=>
+    `<div class="retry-dot ${i<cnt?'wrong':''} ${cnt>=2&&i===cnt-1?'danger':''}"></div>`).join('');
   document.getElementById('retry-label').textContent=
-    cnt===1?'1 erreur sur ce type — réessaie !':
-    cnt===2?'2 erreurs — attention, 1 de plus = pénalité !':
-    '3 erreurs — pénalité activée !';
+    cnt===1?'1 erreur — réessaie !':cnt===2?'2 erreurs — attention !':'3 erreurs — pénalité !';
 }
 
-
-// ════════════════════════════════════════════════
-// QUESTION GENERATORS — 3ème (Brian)
-// Each question has: text, math, choices, fmt, subtype, explain{answer,steps,tip}
-// Generators use randomness to always produce new variants
-// ════════════════════════════════════════════════
-
-function genFr(){
-  const lv=curDiff;
-  const sub=pick(['simp','mult','div','add']);
-  if(lv==='facile'||sub==='simp'){
-    const k=pick([2,3,4,5,6]);const n=rand(1,7),d=rand(n+1,10);
-    const[sn,sd]=simp(n*k,d*k);const w=wf(sn,sd,3);
-    return{text:'Simplifie cette fraction à sa forme irréductible.',math:F(n*k,d*k),
-      choices:sh([{v:`${sn}/${sd}`,ok:true},...w.map(x=>({v:`${x.n}/${x.d}`,ok:false}))]),
-      fmt:v=>{const[a,b]=v.split('/');return F(a,b);},subtype:'simp',
-      explain:{answer:F(sn,sd),steps:[
-        {num:'Étape 1',text:`Cherche le PGCD de ${n*k} et ${d*k}.`,math:`PGCD = ${k}`},
-        {num:'Étape 2',text:'Divise les deux termes par le PGCD.',math:`${n*k}÷${k}=${sn}  et  ${d*k}÷${k}=${sd}`},
-        {num:'Résultat',text:'',math:`${sn}/${sd}`}],
-        tip:'PGCD : décompose en facteurs premiers, ou utilise l\'algorithme d\'Euclide.'}};
-  }
-  if(sub==='mult'){
-    const n1=rand(1,6),d1=rand(2,7),n2=rand(1,6),d2=rand(2,7);
-    const[sn,sd]=simp(n1*n2,d1*d2);const w=wf(sn,sd,3);
-    return{text:'Calcule et simplifie.',math:`${F(n1,d1)} ${OP('×')} ${F(n2,d2)}`,
-      choices:sh([{v:`${sn}/${sd}`,ok:true},...w.map(x=>({v:`${x.n}/${x.d}`,ok:false}))]),
-      fmt:v=>{const[a,b]=v.split('/');return F(a,b);},subtype:'mult',
-      explain:{answer:F(sn,sd),steps:[
-        {num:'Règle',text:'num×num et dén×dén',math:`${n1}×${n2}=${n1*n2}  /  ${d1}×${d2}=${d1*d2}`},
-        {num:'Simplifier',text:`PGCD(${n1*n2},${d1*d2})=${gcd(n1*n2,d1*d2)}`,math:`=${sn}/${sd}`}],
-        tip:'Multiplier les fractions : numérateur × numérateur, dénominateur × dénominateur, puis simplifier.'}};
-  }
-  if(sub==='div'){
-    const n1=rand(1,6),d1=rand(2,7),n2=rand(1,6),d2=rand(2,7);
-    const[sn,sd]=simp(n1*d2,d1*n2);const w=wf(sn,sd,3);
-    return{text:'Effectue la division.',math:`${F(n1,d1)} ${OP('÷')} ${F(n2,d2)}`,
-      choices:sh([{v:`${sn}/${sd}`,ok:true},...w.map(x=>({v:`${x.n}/${x.d}`,ok:false}))]),
-      fmt:v=>{const[a,b]=v.split('/');return F(a,b);},subtype:'div',
-      explain:{answer:F(sn,sd),steps:[
-        {num:'Règle',text:'Diviser = multiplier par l\'inverse',math:`${F(n1,d1)} × ${F(d2,n2)}`},
-        {num:'Résultat',text:'',math:`${sn}/${sd}`}],
-        tip:'Division de fractions : inverse de la 2e fraction, puis multiplier.'}};
-  }
-  // add
-  const d1=rand(2,6),d2=rand(2,6),n1=rand(1,d1-1),n2=rand(1,d2-1);
-  const L=lcm(d1,d2);const rn=n1*(L/d1)+n2*(L/d2);
-  const[sn,sd]=simp(rn,L);const w=wf(sn,sd,3);
-  return{text:'Calcule et donne le résultat irréductible.',math:`${F(n1,d1)} ${OP('+')} ${F(n2,d2)}`,
-    choices:sh([{v:`${sn}/${sd}`,ok:true},...w.map(x=>({v:`${x.n}/${x.d}`,ok:false}))]),
-    fmt:v=>{const[a,b]=v.split('/');return F(a,b);},subtype:'add',
-    explain:{answer:F(sn,sd),steps:[
-      {num:'PPCM',text:`PPCM(${d1},${d2})=${L}`,math:`${F(n1*(L/d1),L)} + ${F(n2*(L/d2),L)}`},
-      {num:'Addition',text:'',math:`${F(rn,L)} = ${F(sn,sd)}`}],
-      tip:'PPCM = plus petit commun multiple. Réduire au même dénominateur avant d\'additionner.'}};
-}
-
-function genAl(){
-  const lv=curDiff;
-  if(lv==='facile'){
-    const a=rand(2,6),b=rand(1,8),c=rand(1,8);const r1=a*b,r2=a*c;
-    const correct=`${r1}x + ${r2}`;
-    const w=[`${r1+1}x + ${r2}`,`${r1}x + ${r2+1}`,`${a}x + ${b+c}`];
-    return{text:"Développe l'expression.",math:`${a}(x + ${b}) + ${a}×${c}`,
-      choices:sh([{v:correct,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>v,subtype:'dev',
-      explain:{answer:correct,steps:[
-        {num:'Distributivité',text:`${a}×x=${r1}x et ${a}×${b}=${a*b}`,math:`${r1}x + ${a*b} + ${r2}`},
-        {num:'Résultat',text:`${a*b}+${r2}=...`,math:correct}],
-        tip:'a(b+c) = ab+ac. Multiplier TOUS les termes entre parenthèses.'}};
-  }
-  if(lv==='moyen'){
-    const a=rand(1,4),b=rand(1,4);const r1=a*a,r2=2*a*b,r3=b*b;
-    const correct=`${r1}x² + ${r2}x + ${r3}`;
-    const w=[`${r1}x² + ${a*b}x + ${r3}`,`${r1}x² + ${r2}x + ${r3+1}`,`${r1+1}x² + ${r2}x + ${r3}`];
-    return{text:"Développe avec l'identité remarquable.",math:`(${a}x + ${b})²`,
-      choices:sh([{v:correct,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>v,subtype:'ir',
-      explain:{answer:correct,steps:[
-        {num:'(a+b)²=a²+2ab+b²',text:`a=${a}x, b=${b}`,math:`${r1}x² + ${r2}x + ${r3}`}],
-        tip:'3 identités : (a+b)²=a²+2ab+b² · (a-b)²=a²-2ab+b² · (a+b)(a-b)=a²-b²'}};
-  }
-  const a=rand(2,6),b=rand(-8,8),c=rand(-10,10);
-  const xn=c-b;if(xn%a!==0)return genAl();const xv=xn/a;
-  const w=[xv+1,xv-1,xv+2,xv-2].filter(v=>v!==xv).slice(0,3);
-  return{text:"Résous l'équation.",math:`${a}x ${b>=0?'+ ':''}${b} = ${c}`,
-    choices:sh([{v:xv,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>`x = ${v}`,subtype:'eq1',
-    explain:{answer:`x = ${xv}`,steps:[
-      {num:'Isoler x',text:`Soustrait ${b} des deux côtés.`,math:`${a}x = ${c-b}`},
-      {num:'Diviser',text:`Divise par ${a}.`,math:`x = ${xv}`},
-      {num:'Vérif',text:'',math:`${a}×${xv}+${b}=${a*xv+b} ✓`}],
-      tip:'ax+b=c → x=(c−b)/a. Toujours vérifier.'}};
-}
-
-function genGe(){
-  const lv=curDiff;
-  if(lv==='facile'){
-    const pyts=[[3,4,5],[5,12,13],[6,8,10],[8,15,17],[9,12,15],[7,24,25]];
-    const[a,b,c]=pick(pyts);const w=[c+1,c-1,c+2].filter(v=>v>0&&v!==c).slice(0,3);
-    return{text:"Triangle rectangle. Calcule l'hypoténuse.",math:`a = ${a} cm,  b = ${b} cm`,
-      choices:sh([{v:c,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>`c = ${v} cm`,subtype:'pyth',
-      explain:{answer:`c = ${c} cm`,steps:[
-        {num:'Pythagore',text:'c²=a²+b²',math:`${a}²+${b}²=${a*a+b*b}`},
-        {num:'Racine',text:'',math:`c=√${a*a+b*b}=${c} cm`}],
-        tip:'Pythagore uniquement dans un triangle rectangle. Hypoténuse = côté en face de l\'angle droit.'}};
-  }
-  if(lv==='moyen'){
-    const AB=rand(4,12),AC=rand(4,12),AD=rand(2,AB-1);
-    const AE=Math.round(AD*AC/AB*10)/10;
-    const w=[AE+0.5,AE-0.5,AE+1].filter(v=>v>0&&v!==AE).slice(0,3);
-    return{text:'Thalès : (DE)∥(BC). Calcule AE.',math:`AB=${AB}, AC=${AC}, AD=${AD}`,
-      choices:sh([{v:AE,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>`AE = ${v}`,subtype:'thales',
-      explain:{answer:`AE = ${AE}`,steps:[
-        {num:'Thalès',text:'AD/AB = AE/AC',math:`${AD}/${AB} = AE/${AC}`},
-        {num:'Calcul',text:'',math:`AE = ${AD}×${AC}÷${AB} = ${AE}`}],
-        tip:'Thalès : rapports proportionnels entre les longueurs parallèles.'}};
-  }
-  const angles=[{deg:30,sin:.5,cos:.87,tan:.58},{deg:45,sin:.71,cos:.71,tan:1},{deg:60,sin:.87,cos:.5,tan:1.73}];
-  const angle=pick(angles);const fn=pick(['sin','cos','tan']);
-  const val=fn==='sin'?angle.sin:fn==='cos'?angle.cos:angle.tan;
-  const w=[+(val+.1).toFixed(2),+(val-.1).toFixed(2),+(val+.2).toFixed(2)].filter(v=>v>0&&v!==val).slice(0,3);
-  return{text:'Donne la valeur (arrondie).',math:`${fn}(${angle.deg}°)`,
-    choices:sh([{v:val,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>`≈ ${v}`,subtype:'trigo',
-    explain:{answer:`${fn}(${angle.deg}°) ≈ ${val}`,steps:[
-      {num:'SOH-CAH-TOA',text:'sin=opp/hyp · cos=adj/hyp · tan=opp/adj',math:`${fn}(${angle.deg}°) ≈ ${val}`}],
-      tip:'Retenir : sin30°=0.5, cos45°=0.71, tan45°=1, sin60°=0.87.'}};
-}
-
-function genSt(){
-  const lv=curDiff;
-  if(lv==='facile'){
-    const n=rand(4,6);const vals=Array.from({length:n},()=>rand(4,18));
-    const sum=vals.reduce((a,b)=>a+b,0);const mean=Math.round(sum/n*10)/10;
-    const w=[+(mean+.5).toFixed(1),+(mean-.5).toFixed(1),+(mean+1).toFixed(1)].filter(v=>v!==mean).slice(0,3);
-    return{text:`Calcule la moyenne.`,math:vals.join(' ; '),
-      choices:sh([{v:mean,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>`Moyenne = ${v}`,subtype:'mean',
-      explain:{answer:`Moyenne = ${mean}`,steps:[
-        {num:'Formule',text:'Somme ÷ effectif',math:`(${vals.join('+')}) ÷ ${n} = ${mean}`}],
-        tip:'Moyenne = additionner toutes les valeurs puis diviser par leur nombre.'}};
-  }
-  if(lv==='moyen'){
-    const n=rand(5,7);const vals=Array.from({length:n},()=>rand(1,20)).sort((a,b)=>a-b);
-    const med=vals[Math.floor(n/2)];const etendue=vals[n-1]-vals[0];
-    const q=pick(['med','et']);const correct=q==='med'?med:etendue;
-    const w=[correct+1,correct-1,correct+2].filter(v=>v>0&&v!==correct).slice(0,3);
-    return{text:`${q==='med'?'Médiane ?':'Étendue ?'} (série triée)`,math:vals.join(' < '),
-      choices:sh([{v:correct,ok:true},...w.map(v=>({v,ok:false}))]),
-      fmt:v=>`${q==='med'?'Médiane':'Étendue'} = ${v}`,subtype:'stat2',
-      explain:{answer:`${q==='med'?'Médiane':'Étendue'} = ${correct}`,steps:
-        q==='med'?[{num:'Médiane',text:`Rang central : ${Math.floor(n/2)+1}/${n}`,math:`Médiane = ${med}`}]
-        :[{num:'Étendue',text:'max − min',math:`${vals[n-1]} − ${vals[0]} = ${etendue}`}],
-        tip:'Médiane = valeur centrale (série triée). Étendue = max - min.'}};
-  }
-  const total=rand(10,24),fav=rand(1,total-1);
-  const[sn,sd]=simp(fav,total);const w=wf(sn,sd,3);
-  return{text:`Urne : ${total} boules, ${fav} rouges. Probabilité de tirer rouge ?`,math:'',
-    choices:sh([{v:`${sn}/${sd}`,ok:true},...w.map(x=>({v:`${x.n}/${x.d}`,ok:false}))]),
-    fmt:v=>{const[a,b]=v.split('/');return F(a,b);},subtype:'proba',
-    explain:{answer:F(sn,sd),steps:[
-      {num:'P = cas fav / cas tot',text:'',math:`${fav}/${total} = ${sn}/${sd}`}],
-      tip:'Probabilité toujours entre 0 et 1. Simplifier la fraction !'}};
-}
-
-function genPy(){
-  const lv=curDiff;
-  if(lv==='facile'){
-    const base=pick([2,3,5,10]);const n=rand(1,4),m=rand(1,4);
-    const correct=`${base}^${n+m}`;
-    const w=[`${base}^${n*m}`,`${base+1}^${n+m}`,`${base}^${n+m+1}`];
-    return{text:'Simplifie (même base).',math:`${base}^${n} × ${base}^${m}`,
-      choices:sh([{v:correct,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>v,subtype:'pow1',
-      explain:{answer:correct,steps:[{num:'Règle',text:'aⁿ×aᵐ=aⁿ⁺ᵐ',math:`${base}^${n+m}`}],
-        tip:'aⁿ×aᵐ=aⁿ⁺ᵐ · aⁿ÷aᵐ=aⁿ⁻ᵐ · (aⁿ)ᵐ=aⁿˣᵐ · a⁰=1'}};
-  }
-  if(lv==='moyen'){
-    const base=pick([2,3,4,5,10]);const neg=rand(1,4);
-    const den=Math.pow(base,neg);const correct=`1/${den}`;
-    const w=[`${den}`,`1/${den+1}`,`1/${den-1}`].filter(v=>v!==correct);
-    return{text:'Que vaut cette expression ?',math:`${base}^(−${neg})`,
-      choices:sh([{v:correct,ok:true},...w.slice(0,3).map(v=>({v,ok:false}))]),fmt:v=>v,subtype:'powneg',
-      explain:{answer:correct,steps:[
-        {num:'Exposant négatif',text:'a^(−n)=1/aⁿ',math:`${base}^${neg}=${den} → 1/${den}`}],
-        tip:'Exposant négatif ≠ résultat négatif ! a^(-n) = 1/aⁿ.'}};
-  }
-  const mantisse=(rand(10,99))/10;const exp=rand(-2,4);
-  const val=(mantisse*Math.pow(10,exp)).toPrecision(3);
-  const formatted=`${mantisse}×10^${exp}`;
-  const w=[`${mantisse+.5}×10^${exp}`,`${mantisse}×10^${exp+1}`,`${(mantisse*10)/10}×10^${exp-1}`].filter(v=>v!==formatted);
-  return{text:'Notation scientifique (a×10ⁿ, 1≤a<10).',math:`${val}`,
-    choices:sh([{v:formatted,ok:true},...w.slice(0,3).map(v=>({v,ok:false}))]),fmt:v=>v,subtype:'sci',
-    explain:{answer:formatted,steps:[
-      {num:'Mantisse',text:`1≤${mantisse}<10 ✓`,math:`${mantisse}×10^${exp}`}],
-      tip:'Mantisse entre 1 et 10. L\'exposant = nombre de rangs décalés.'}};
-}
-
-
-const CATS=[
-  {id:'fr',icon:'½',name:'Fractions',cls:'cc-fr',desc:'Simplification, opérations, équations'},
-  {id:'al',icon:'x²',name:'Algèbre',cls:'cc-al',desc:'Développer, factoriser, identités, équations'},
-  {id:'ge',icon:'△',name:'Géométrie',cls:'cc-ge',desc:'Pythagore, Thalès, trigonométrie'},
-  {id:'st',icon:'📊',name:'Stats & Proba',cls:'cc-st',desc:'Moyenne, médiane, probabilités'},
-  {id:'py',icon:'aⁿ',name:'Puissances',cls:'cc-py',desc:'Règles, exposants négatifs, notation sci.'},
-];
-const GENS={fr:genFr,al:genAl,ge:genGe,st:genSt,py:genPy};
-
-let _retryQ=null; // current question being retried
-
+// RENDER QUESTION
 function renderQ(q,isRetry=false){
   window._cq=q;answered=false;
   if(!isRetry)_retryQ=null;
@@ -1009,32 +1050,25 @@ function revealOk(q){if(!q||!q.choices)return;document.querySelectorAll('.ch').f
 
 function doCorrect(fast,q){
   correct++;streak++;if(streak>maxStreak)maxStreak=streak;
-  if(q)resetWrongCount(q.subtype);
+  if(q)resetWC(q.subtype);
+  consecutiveWrong=0;
   const bonus=streak>=5?30:streak>=3?20:10;
   const mult=curDiff==='facile'?1:curDiff==='moyen'?2:3;
   const pts=bonus*mult;score+=pts;totalScore+=pts;
   document.getElementById('s-score').textContent=totalScore;
   document.getElementById('s-streak').textContent=streak;
   refreshCatPts();
-  // check speed bonus
   if(fast){
-    if(curDiff==='facile'){
-      // tracked globally, bonus paid at end
-    } else {
+    if(curDiff!=='facile'){
       speedBonusCount++;
       document.getElementById('s-bonus').textContent=speedBonusCount+'/3';
-      if(speedBonusCount>0&&speedBonusCount%3===0){
-        // show bonus card after Arya
-        window._pendingBonus=true;
-      }
+      if(speedBonusCount%3===0)window._pendingBonus=true;
     }
-  } else {
-    if(curDiff==='facile') facileAllFast=false;
-  }
-  showArya(pts,fast,q);
+  } else {if(curDiff==='facile')facileAllFast=false;}
+  showArya(pts,fast);
 }
 
-function showArya(pts,fast,q){
+function showArya(pts,fast){
   const qObj=pick(QUOTES);const humor=pick(HUMOR);
   document.getElementById('arya-img').src=pick(ARYA_IMGS);
   document.getElementById('arya-quote').textContent='« '+qObj.q+' »';
@@ -1043,7 +1077,6 @@ function showArya(pts,fast,q){
   document.getElementById('arya-pts').textContent=`+${pts} pts`;
   const bb=document.getElementById('bonus-badge-arya');
   bb.style.display=fast?'inline-block':'none';
-  if(fast)bb.textContent=curDiff==='facile'?'⚡ Réponse rapide !':'⚡ Bonus vitesse !';
   document.getElementById('arya-ol').classList.add('show');
 }
 function closeArya(){
@@ -1072,6 +1105,14 @@ function doWrong(q,timeout=false){
   streak=0;document.getElementById('s-streak').textContent=0;
   lives--;document.getElementById('s-lives').textContent=['❤❤❤','❤❤','❤','💀'][3-Math.max(0,lives)];
   if(curDiff==='facile')facileAllFast=false;
+  // consecutive wrong penalty
+  consecutiveWrong++;
+  if(consecutiveWrong>=2&&totalEarned>0){
+    totalEarned=Math.max(0,+(totalEarned-0.5).toFixed(2));
+    updateWalletUI();
+    showDeductNotice();
+    consecutiveWrong=0;
+  }
   if(timeout){
     const fb=document.getElementById('fb');fb.className='fb bad on';
     fb.textContent='// temps écoulé !';
@@ -1079,14 +1120,9 @@ function doWrong(q,timeout=false){
     if(lives<=0)setTimeout(endGame,1400);
     return;
   }
-  // increment wrong count for this subtype
-  const cnt=q?incWrongCount(q.subtype):0;
-  if(cnt>=3){
-    // show punishment
-    showPunishment(cnt,q);
-  } else {
-    showExpl(q,cnt);
-  }
+  const cnt=q?incWC(q.subtype):0;
+  if(cnt>=2)showPunishment(cnt);
+  else showExpl(q,cnt);
 }
 
 function showExpl(q,wrongCnt){
@@ -1102,35 +1138,35 @@ function showExpl(q,wrongCnt){
     </div>`).join('');
   document.getElementById('expl-cat').src=pick(ARYA_IMGS);
   document.getElementById('expl-tip').textContent='💡 Astuce : '+e.tip;
-  window._retryQ=q; // will be re-rendered
+  _retryQ=q;
   document.getElementById('expl-ol').classList.add('show');
 }
 function closeExpl(){
   document.getElementById('expl-ol').classList.remove('show');
   if(lives<=0){endGame();return;}
-  // Re-render same type question (new variant)
   if(_retryQ){
-    // generate a fresh variant of the same type
-    const freshQ=Object.assign({},GENS[curCat.id]());
-    // force same subtype category by retrying if different (up to 5 tries)
-    let tries=0,fq=freshQ;
-    while(fq.subtype!==_retryQ.subtype&&tries<5){fq=GENS[curCat.id]();tries++;}
+    let fq=GENS[curCat.id]();let t=0;
+    while(fq.subtype!==_retryQ.subtype&&t<6){fq=GENS[curCat.id]();t++;}
     renderQ(fq,true);
-  } else {
-    document.getElementById('nxt-btn').classList.add('on');
-  }
+  } else document.getElementById('nxt-btn').classList.add('on');
 }
 
-function showPunishment(cnt,q){
-  // pick punishment based on wrong count severity
-  let pool=PUNISHMENTS;
-  if(cnt>=5) pool=PUNISHMENTS.filter(p=>p.sev>=3);
-  else if(cnt>=4) pool=PUNISHMENTS.filter(p=>p.sev>=2);
+function showPunishment(cnt){
+  let pool;
+  if(totalEarned<=0){
+    // no balance: escalate to device ban at cnt>=3
+    if(cnt>=3) pool=PUNISHMENTS.filter(p=>p.sev>=3);
+    else pool=PUNISHMENTS.filter(p=>p.sev<=2);
+  } else {
+    // has balance: chores only (device ban only at cnt>=4)
+    if(cnt>=4) pool=PUNISHMENTS.filter(p=>p.sev>=3);
+    else pool=PUNISHMENTS.filter(p=>p.sev<=2);
+  }
+  if(!pool||pool.length===0) pool=PUNISHMENTS.filter(p=>p.sev<=2);
   const pun=pick(pool)||PUNISHMENTS[0];
   document.getElementById('pun-icon').textContent=pun.icon;
   document.getElementById('pun-label').textContent=pun.label;
-  const code='PUN-'+Math.random().toString(36).slice(2,5).toUpperCase();
-  document.getElementById('pun-code').textContent='Code : '+code;
+  document.getElementById('pun-code').textContent='Code:PUN-'+Math.random().toString(36).slice(2,5).toUpperCase();
   document.getElementById('pun-ol').classList.add('show');
 }
 function closePunishment(){
@@ -1144,65 +1180,55 @@ function nextQ(){
   if(lives<=0){endGame();return;}
   const cfg=DIFF_CONFIG[curDiff];
   if(qNum>=cfg.qs){endGame();return;}
-  qNum++;
-  renderQ(GENS[curCat.id]());
+  qNum++;renderQ(GENS[curCat.id]());
 }
 
 function endGame(){
   clearInterval(timerInt);
   const cfg=DIFF_CONFIG[curDiff];
-  const ratio=correct/cfg.qs;
-  const passed=ratio>=cfg.passRatio;
+  const ratio=correct/cfg.qs;const passed=ratio>=cfg.passRatio;
   const reward=passed?cfg.reward:0;
-  const el=Math.floor((Date.now()-_start)/1000);
-  const mm=String(Math.floor(el/60)).padStart(2,'0'),ss=String(el%60).padStart(2,'0');
-
-  // facile speed bonus
   let facileBonus=0;
   if(curDiff==='facile'&&facileAllFast&&correct===cfg.qs){
-    facileBonus=0.5;
-    totalEarned=+(totalEarned+0.5).toFixed(2);
-    coupons.push({amount:0.5,code:'FST-'+Math.random().toString(36).slice(2,5).toUpperCase(),type:'fast'});
+    facileBonus=0.5;totalEarned=+(totalEarned+.5).toFixed(2);
+    coupons.push({amount:.5,code:'FST-'+Math.random().toString(36).slice(2,5).toUpperCase(),type:'fast'});
     updateWalletUI();
   }
-
+  const el=Math.floor((Date.now()-_start)/1000);
+  const mm=String(Math.floor(el/60)).padStart(2,'0'),ss=String(el%60).padStart(2,'0');
   document.getElementById('res-img').src=pick(ARYA_IMGS);
-  document.getElementById('res-title').textContent=
-    passed?(reward>0?'Robux débloqués ! 💎':'Bien joué ! ✓'):'Pas encore... 💪';
+  document.getElementById('res-title').textContent=passed?(reward>0?'Robux débloqués ! 💎':'Bien joué ! ✓'):'Pas encore... 💪';
   document.getElementById('res-score').textContent=totalScore+' pts';
   document.getElementById('rs-ok').textContent=`${correct}/${cfg.qs} (${Math.round(ratio*100)}%)`;
   document.getElementById('rs-time').textContent=`${mm}:${ss}`;
   document.getElementById('rs-streak').textContent=maxStreak;
-
-  let totalReward=+(reward+facileBonus).toFixed(2);
+  const totalReward=+(reward+facileBonus).toFixed(2);
   document.getElementById('rs-earned').textContent=totalReward>0?`+${totalReward}€`:'0€';
-
+  if(!passed)document.getElementById('res-note').textContent=`Il faut ${Math.round(cfg.passRatio*100)}% — tu as eu ${Math.round(ratio*100)}%.`;
+  else document.getElementById('res-note').textContent='';
   if(totalReward>0){
     totalEarned=+(totalEarned+reward).toFixed(2);
-    const code='BR-'+curCat.id.toUpperCase()+'-'+Math.random().toString(36).slice(2,4).toUpperCase();
+    const code='BR4-'+curCat.id.toUpperCase()+'-'+Math.random().toString(36).slice(2,4).toUpperCase();
     curCoupon={amount:totalReward,code,cat:curCat.name,diff:curDiff};
     if(reward>0)coupons.push(curCoupon);
     updateWalletUI();
     document.getElementById('cpn-amt').textContent=`${totalReward}€`;
     document.getElementById('cpn-cat').src=pick(ARYA_IMGS);
-    document.getElementById('cpn-code').textContent=`CODE : ${code}`;
+    document.getElementById('cpn-code').textContent=`CODE:${code}`;
     document.getElementById('res-coupon').style.display='block';
     document.getElementById('print-btn').style.display='inline-block';
   } else {
     document.getElementById('res-coupon').style.display='none';
     document.getElementById('print-btn').style.display='none';
   }
-
-  if(!passed){
-    const needed=Math.round(cfg.passRatio*100);
-    document.getElementById('res-note').textContent=
-      `Il faut ${needed}% de bonnes réponses pour débloquer la récompense. Tu as eu ${Math.round(ratio*100)}%.`;
-  } else document.getElementById('res-note').textContent='';
-
   show('result');
 }
 
-
+function showDeductNotice(){
+  document.getElementById('deduct-balance').textContent='Solde restant : '+totalEarned.toFixed(2)+'€';
+  document.getElementById('deduct-ol').classList.add('show');
+}
+// WALLET
 function updateWalletUI(){
   const t=totalEarned.toFixed(2);
   document.getElementById('wallet-txt').textContent=`${t}€ Robux`;
@@ -1210,31 +1236,25 @@ function updateWalletUI(){
   const pct=Math.min(totalEarned/5*100,100);
   document.getElementById('w-prog-fill').style.width=pct+'%';
   document.getElementById('w-prog-label').textContent=
-    totalEarned>=5?'✨ 5€ atteints ! Coupon disponible !':`${t}€ / 5€ — encore ${(5-totalEarned).toFixed(2)}€ pour débloquer`;
-  const btn=document.getElementById('w-coupon-btn');
-  btn.disabled=totalEarned<5;
+    totalEarned>=5?'✨ 5€ atteints ! Coupon disponible !':`${t}€ / 5€ — encore ${(5-totalEarned).toFixed(2)}€`;
+  document.getElementById('w-coupon-btn').disabled=totalEarned<5;
   document.getElementById('w-history').innerHTML=coupons.slice(-6).reverse().map(c=>
     `<div class="w-hist-item"><span>${c.type==='speed'?'⚡ Bonus vitesse':c.type==='fast'?'🚀 Facile rapide':c.cat+' ('+c.diff+')'}</span><span style="color:var(--robux)">+${c.amount}€</span></div>`
   ).join('')||'<div style="font-family:var(--mono);font-size:.65rem;color:var(--muted);padding:8px 0">Aucun coupon encore</div>';
 }
 function openWallet(){updateWalletUI();document.getElementById('wallet-modal-ol').classList.add('show');}
 function closeWallet(){document.getElementById('wallet-modal-ol').classList.remove('show');}
-
 function useCoupon(){
   if(totalEarned<5)return;
   document.getElementById('wallet-modal-ol').classList.remove('show');
-  // show dance
   document.getElementById('dance-cat').src=pick(ARYA_IMGS);
   document.getElementById('dance-modal-ol').classList.add('show');
 }
 function closeDance(){
   document.getElementById('dance-modal-ol').classList.remove('show');
-  // reset
-  totalEarned=0;coupons=[];
+  totalEarned=Math.max(0,+(totalEarned-5).toFixed(2));
   updateWalletUI();
-  document.getElementById('wallet-txt').textContent='0€ Robux';
 }
-
 
 function printCoupon(){
   if(!curCoupon)return;
@@ -1243,17 +1263,16 @@ function printCoupon(){
     <div style="font-family:'Syne',sans-serif;max-width:370px;margin:40px auto;padding:26px;
       background:linear-gradient(135deg,#001a33,#002a50);border:2px solid #00b2ff;
       border-radius:16px;text-align:center;color:white;">
-      <div style="font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:3px;
-        color:#00b2ff;margin-bottom:10px;text-transform:uppercase;">⬛ Robux Reward · Brian</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:3px;
+        color:#00b2ff;margin-bottom:10px;text-transform:uppercase;">⬛ Robux · Brian · 4ème</div>
       <div style="font-size:3.6rem;font-weight:800;color:white;line-height:1;margin-bottom:4px;">${curCoupon.amount}€</div>
       <div style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:#00b2ff;
         letter-spacing:1px;margin-bottom:14px;">de Robux gagné !</div>
       <img src="${catSrc}" style="width:64px;height:64px;border-radius:50%;object-fit:cover;
         border:2px solid #00b2ff;margin-bottom:8px;">
       <div style="font-size:1rem;font-weight:700;margin-bottom:4px;">Brian 🐾 Arya</div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;color:#00b2ff;
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.6rem;color:#00b2ff;
         letter-spacing:3px;margin-top:8px;">${curCoupon.code}</div>
-      <div style="font-size:.56rem;color:#64748b;margin-top:6px;">valable immédiatement · non cumulable</div>
     </div>`;
   window.print();
 }
