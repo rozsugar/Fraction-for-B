@@ -706,83 +706,193 @@ document.getElementById('badge-img').src=ARYA_IMGS[0];
 // ── FRACTIONS & PROPORTIONNALITÉ (fr) ────────────
 function genFr(){
   const lv=curDiff;
-  if(lv==='facile'){
-    // Pourcentage simple
-    const p=pick([10,20,25,50,75]);const N=rand(2,20)*4;
-    const res=N*p/100;
-    const w=[res+p/10,res-p/10,res+N/10,N-res].filter(v=>v>0&&v!==res).slice(0,3);
-    return{text:`Calcule ${p}% de ${N}.`,math:'',
-      choices:sh([{v:res,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>v,subtype:'pct',
-      explain:{answer:`${p}% de ${N} = ${res}`,steps:[
-        {num:'Méthode',text:`${p}% = ${p}/100`,math:`${N} × ${p} ÷ 100 = ${res}`}],
-        tip:'p% de N = N × p ÷ 100. Astuce : 50%=÷2, 25%=÷4, 10%=÷10.'}};
+  const sub=lv==='facile'?pick(['simp','pct','cmp']):lv==='moyen'?pick(['add','mult','div']):pick(['prop','pct2','mixte']);
+
+  if(sub==='simp'){
+    const k=pick([2,3,4,5,6]);const n=rand(1,7),d=rand(n+1,10);
+    const[sn,sd]=simp(n*k,d*k);const w=wf(sn,sd,3);
+    return{text:'Simplifie \u00e0 la forme irr\u00e9ductible.',math:F(n*k,d*k),
+      choices:sh([{v:sn+'/'+sd,ok:true},...w.map(x=>({v:x.n+'/'+x.d,ok:false}))]),
+      fmt:v=>{const[a,b]=v.split('/');return F(a,b);},subtype:'simp',
+      explain:{answer:F(sn,sd),steps:[
+        {num:'\u00c9tape 1',text:'PGCD('+n*k+','+d*k+')',math:'PGCD = '+k},
+        {num:'\u00c9tape 2',text:'Diviser par '+k,math:n*k+'\u00f7'+k+'='+sn+' et '+d*k+'\u00f7'+k+'='+sd}],
+        tip:'PGCD : d\u00e9composer en facteurs premiers ou algorithme d\'Euclide.'}};
   }
-  if(lv==='moyen'){
-    // Addition de fractions dénominateurs différents
-    const d1=rand(2,6),d2=rand(2,6);
-    if(d1===d2)return genFr();
-    const n1=rand(1,d1-1),n2=rand(1,d2-1);
+  if(sub==='pct'){
+    const base=pick([50,80,120,200,500]);const pct=pick([10,20,25,50]);
+    const r=base*pct/100;
+    const w=[r+5,r-5,r*2].filter(v=>v>0&&v!==r).slice(0,3);
+    return{text:pct+'% de '+base+' = ?',math:'',
+      choices:sh([{v:r,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>v+' \u20ac',subtype:'pct',
+      explain:{answer:r+' \u20ac',steps:[
+        {num:'M\u00e9thode',text:pct+'%='+pct+'/100',math:base+' \u00d7 '+pct+'/100 = '+r}],
+        tip:'p% de a = a\u00d7p\u00f7100. Ex: 20% de 80 = 80\u00d720\u00f7100 = 16.'}};
+  }
+  if(sub==='cmp'){
+    // Compare two fractions
+    const d1=rand(3,8),d2=rand(3,8),n1=rand(1,d1-1),n2=rand(1,d2-1);
+    const v1=n1/d1,v2=n2/d2;
+    const correct=v1>v2?F(n1,d1)+' > '+F(n2,d2):v1<v2?F(n1,d1)+' < '+F(n2,d2):F(n1,d1)+' = '+F(n2,d2);
+    const w=[v1>v2?F(n1,d1)+' < '+F(n2,d2):F(n1,d1)+' > '+F(n2,d2),F(n2,d2)+' > '+F(n1,d1),F(n1,d1)+' = '+F(n2,d2)].filter(v=>v!==correct).slice(0,3);
+    return{text:'Compare ces deux fractions.',math:F(n1,d1)+' \u25a1 '+F(n2,d2),
+      choices:sh([{v:correct,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>v,subtype:'cmp',
+      explain:{answer:correct,steps:[
+        {num:'R\u00e9duire au m\u00eame d\u00e9nominateur',text:'',math:F(n1*d2,d1*d2)+' vs '+F(n2*d1,d1*d2)},
+        {num:'Comparer les num\u00e9rateurs',text:n1*d2+' vs '+n2*d1,math:correct}],
+        tip:'Mettre au m\u00eame d\u00e9nominateur ou comparer les produits en croix.'}};
+  }
+  if(sub==='add'){
+    const d1=rand(2,6),d2=rand(2,6),n1=rand(1,d1-1),n2=rand(1,d2-1);
     const L=lcm(d1,d2);const rn=n1*(L/d1)+n2*(L/d2);
     const[sn,sd]=simp(rn,L);const w=wf(sn,sd,3);
-    return{text:'Calcule et simplifie.',math:`${F(n1,d1)} ${OP('+')} ${F(n2,d2)}`,
-      choices:sh([{v:`${sn}/${sd}`,ok:true},...w.map(x=>({v:`${x.n}/${x.d}`,ok:false}))]),
+    return{text:'Calcule et donne le r\u00e9sultat irr\u00e9ductible.',math:F(n1,d1)+' <span class="op">+</span> '+F(n2,d2),
+      choices:sh([{v:sn+'/'+sd,ok:true},...w.map(x=>({v:x.n+'/'+x.d,ok:false}))]),
       fmt:v=>{const[a,b]=v.split('/');return F(a,b);},subtype:'add',
       explain:{answer:F(sn,sd),steps:[
-        {num:'PPCM',text:`PPCM(${d1},${d2}) = ${L}`,math:`${F(n1*(L/d1),L)} + ${F(n2*(L/d2),L)}`},
-        {num:'Addition',text:'',math:`${F(rn,L)} = ${F(sn,sd)}`}],
-        tip:'Même dénominateur avant d\'additionner. PPCM = plus petit commun multiple.'}};
+        {num:'PPCM('+d1+','+d2+')='+L,text:'',math:F(n1*(L/d1),L)+' + '+F(n2*(L/d2),L)},
+        {num:'Addition',text:'',math:F(rn,L)+' = '+F(sn,sd)}],
+        tip:'PPCM = plus petit commun multiple. R\u00e9duire avant d\'additionner.'}};
   }
-  // Règle de trois (proportionnalité)
-  const a=rand(2,8),b=rand(3,12)*a,c=rand(2,8);
-  const x=b*c/a;
-  if(!Number.isInteger(x))return genFr();
-  const w=[x+1,x-1,x+2,x-2].filter(v=>v>0&&v!==x).slice(0,3);
-  return{text:`${a} articles coûtent ${b}€. Combien coûtent ${c} articles ?`,math:'',
-    choices:sh([{v:x,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>`${v}€`,subtype:'prop',
-    explain:{answer:`${x}€`,steps:[
-      {num:'Prix unitaire',text:`${b}÷${a}`,math:`1 article = ${b/a}€`},
-      {num:'Pour ${c}',text:'',math:`${b/a} × ${c} = ${x}€`}],
-      tip:'Règle de trois : valeur cherchée = (valeur connue × quantité souhaitée) ÷ quantité de référence.'}};
+  if(sub==='mult'){
+    const n1=rand(1,6),d1=rand(2,7),n2=rand(1,6),d2=rand(2,7);
+    const[sn,sd]=simp(n1*n2,d1*d2);const w=wf(sn,sd,3);
+    return{text:'Calcule et simplifie.',math:F(n1,d1)+' <span class="op">\u00d7</span> '+F(n2,d2),
+      choices:sh([{v:sn+'/'+sd,ok:true},...w.map(x=>({v:x.n+'/'+x.d,ok:false}))]),
+      fmt:v=>{const[a,b]=v.split('/');return F(a,b);},subtype:'mult',
+      explain:{answer:F(sn,sd),steps:[
+        {num:'R\u00e8gle',text:'num\u00d7num et d\u00e9n\u00d7d\u00e9n',math:n1+'\u00d7'+n2+'='+n1*n2+' / '+d1+'\u00d7'+d2+'='+d1*d2},
+        {num:'Simplifier',text:'PGCD='+gcd(n1*n2,d1*d2),math:'= '+sn+'/'+sd}],
+        tip:'Multiplier fractions : num\u00e9rateurs entre eux, d\u00e9nominateurs entre eux.'}};
+  }
+  if(sub==='div'){
+    const n1=rand(1,6),d1=rand(2,7),n2=rand(1,6),d2=rand(2,7);
+    const[sn,sd]=simp(n1*d2,d1*n2);const w=wf(sn,sd,3);
+    return{text:'Effectue la division.',math:F(n1,d1)+' <span class="op">\u00f7</span> '+F(n2,d2),
+      choices:sh([{v:sn+'/'+sd,ok:true},...w.map(x=>({v:x.n+'/'+x.d,ok:false}))]),
+      fmt:v=>{const[a,b]=v.split('/');return F(a,b);},subtype:'div',
+      explain:{answer:F(sn,sd),steps:[
+        {num:'R\u00e8gle',text:'Multiplier par l\'inverse',math:F(n1,d1)+' \u00d7 '+F(d2,n2)+' = '+sn+'/'+sd}],
+        tip:'Division = multiplication par l\'inverse de la 2e fraction.'}};
+  }
+  if(sub==='prop'){
+    const a=rand(2,8),b=rand(2,8),c=rand(2,8);
+    if((b*c)%a!==0)return genFr();const d=b*c/a;
+    const w=[d+1,d-1,d+2].filter(v=>v>0&&v!==d).slice(0,3);
+    return{text:'Compl\u00e8te la proportion.',math:''+a+' / '+b+' = '+c+' / ?',
+      choices:sh([{v:d,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>'x = '+v,subtype:'prop',
+      explain:{answer:'x = '+d,steps:[
+        {num:'Produit en croix',text:'',math:a+'\u00d7x = '+b+'\u00d7'+c},
+        {num:'Diviser par '+a,text:'',math:'x = '+b*c+'/'+a+' = '+d}],
+        tip:'Proportion a/b=c/d \u21d4 ad=bc (produit en croix).'}};
+  }
+  if(sub==='pct2'){
+    const base=rand(20,200);const pct=pick([15,30,40,60,75]);
+    const r=Math.round(base*pct/100);
+    const w=[r+1,r-1,r+5].filter(v=>v>0&&v!==r).slice(0,3);
+    return{text:pct+'% de '+base+' = ?',math:'',
+      choices:sh([{v:r,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>v,subtype:'pct',
+      explain:{answer:String(r),steps:[
+        {num:'M\u00e9thode',text:'',math:base+' \u00d7 '+pct+' \u00f7 100 = '+r}],
+        tip:pct+'% = '+pct+'/100. Multiplier puis diviser.'}};
+  }
+  // mixte: nombre mixte
+  const whole=rand(1,5),n=rand(1,5),d=rand(n+1,8);
+  const total=whole*d+n;const[sn,sd]=simp(total,d);const w=wf(sn,sd,3);
+  return{text:'Convertis en fraction irr\u00e9ductible.',math:whole+' et '+F(n,d),
+    choices:sh([{v:sn+'/'+sd,ok:true},...w.map(x=>({v:x.n+'/'+x.d,ok:false}))]),
+    fmt:v=>{const[a,b]=v.split('/');return F(a,b);},subtype:'mixte',
+    explain:{answer:F(sn,sd),steps:[
+      {num:'Convertir',text:'whole\u00d7d+n',math:whole+'\u00d7'+d+'+'+n+'='+total},
+      {num:'Simplifier',text:'',math:F(total,d)+' = '+F(sn,sd)}],
+      tip:'Nombre mixte : entier\u00d7d\u00e9nominateur + num\u00e9rateur, sur le d\u00e9nominateur.'}};
 }
 
 // ── ALGÈBRE & ÉQUATIONS (al) ──────────────────────
 // 4ème: calcul littéral, équations, inéquations
 function genAl(){
   const lv=curDiff;
-  if(lv==='facile'){
-    // Évaluer une expression pour x donné
-    const a=rand(2,6),b=rand(1,8),val=rand(1,6);
-    const res=a*val+b;
-    const w=[res+1,res-1,res+2,a*val].filter(v=>v!==res).slice(0,3);
-    return{text:`Calcule pour x = ${val}.`,math:`${a}x + ${b}`,
-      choices:sh([{v:res,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>v,subtype:'eval',
-      explain:{answer:`${res}`,steps:[
-        {num:'Substitution',text:`Remplace x par ${val}.`,math:`${a}×${val}+${b}=${a*val}+${b}=${res}`}],
-        tip:'Calculer la valeur numérique : remplacer la lettre par le nombre, puis calculer.'}};
+  const sub=lv==='facile'?pick(['eval','eval2','dev_simple']):lv==='moyen'?pick(['ir','ir2','eq1']):pick(['eq1','ineq','fac']);
+
+  if(sub==='eval'){
+    const a=rand(1,5),b=rand(-6,6),x=rand(-3,4);const r=a*x+b;
+    const w=[r+1,r-1,r+2].filter(v=>v!==r).slice(0,3);
+    return{text:'\u00c9value l\'expression pour x = '+x+'.',math:''+a+'x '+( b>=0?'+ ':'')+b,
+      choices:sh([{v:r,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>'= '+v,subtype:'eval',
+      explain:{answer:'= '+r,steps:[{num:'Substituer',text:'Remplace x par '+x,math:a+'\u00d7('+x+') + '+b+' = '+r}],
+        tip:'\u00c9valuer = remplacer x par la valeur donn\u00e9e, puis calculer.'}};
   }
-  if(lv==='moyen'){
-    // Résoudre ax + b = c
+  if(sub==='eval2'){
+    const a=rand(1,4),b=rand(-4,4),x=rand(-3,3);const r=a*x*x+b;
+    const w=[r+2,r-2,a*x+b].filter(v=>v!==r).slice(0,3);
+    return{text:'\u00c9value pour x = '+x+'.',math:''+a+'x\u00b2 '+( b>=0?'+ ':'')+b,
+      choices:sh([{v:r,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>'= '+v,subtype:'eval',
+      explain:{answer:'= '+r,steps:[{num:'Substituer',text:'x\u00b2 = '+x+'\u00b2 = '+x*x,math:a+'\u00d7'+x*x+' + '+b+' = '+r}],
+        tip:'D\'abord le carr\u00e9, ensuite multiplier, enfin ajouter.'}};
+  }
+  if(sub==='dev_simple'){
+    const a=rand(2,6),b=rand(1,5),c=rand(1,5);const r1=a*b,r2=a*c;
+    const correct=r1+'x + '+r2;
+    const w=[r1+'x + '+(r2+1),(r1+1)+'x + '+r2,a+'x + '+(b+c)].filter(v=>v!==correct).slice(0,3);
+    return{text:'D\u00e9veloppe.',math:a+'(x + '+b+') + '+a+'\u00d7'+c,
+      choices:sh([{v:correct,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>v,subtype:'eval',
+      explain:{answer:correct,steps:[
+        {num:'Distributivit\u00e9',text:a+'\u00d7x='+r1+'x et '+a+'\u00d7'+b+'='+a*b,math:r1+'x + '+a*b+' + '+r2},
+        {num:'R\u00e9sultat',text:'',math:correct}],
+        tip:'a(b+c) = ab+ac. Multiplier TOUS les termes.'}};
+  }
+  if(sub==='ir'){
+    const a=rand(1,4),b=rand(1,4);const r1=a*a,r2=2*a*b,r3=b*b;
+    const correct=r1+'x\u00b2 + '+r2+'x + '+r3;
+    const w=[r1+'x\u00b2 + '+(a*b)+'x + '+r3,r1+'x\u00b2 + '+r2+'x + '+(r3+1),(r1+1)+'x\u00b2 + '+r2+'x + '+r3];
+    return{text:'D\u00e9veloppe (a+b)\u00b2.',math:'('+a+'x + '+b+')\u00b2',
+      choices:sh([{v:correct,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>v,subtype:'ir',
+      explain:{answer:correct,steps:[{num:'(a+b)\u00b2=a\u00b2+2ab+b\u00b2',text:'a='+a+'x, b='+b,math:correct}],
+        tip:'3 identit\u00e9s : (a+b)\u00b2 \u00b7 (a-b)\u00b2 \u00b7 (a+b)(a-b)=a\u00b2-b\u00b2'}};
+  }
+  if(sub==='ir2'){
+    const a=rand(1,4),b=rand(1,4);const ra=a*a,rb=b*b;
+    const correct=ra+'x\u00b2 - '+rb;
+    const w=[ra+'x\u00b2 + '+rb,(ra+1)+'x\u00b2 - '+rb,ra+'x\u00b2 - '+(rb+1)];
+    return{text:'D\u00e9veloppe (a+b)(a\u2212b).',math:'('+a+'x + '+b+')('+a+'x \u2212 '+b+')',
+      choices:sh([{v:correct,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>v,subtype:'ir',
+      explain:{answer:correct,steps:[{num:'(a+b)(a\u2212b)=a\u00b2\u2212b\u00b2',text:'a='+a+'x, b='+b,math:correct}],
+        tip:'Pas de terme du milieu ! R\u00e9sultat = diff\u00e9rence de deux carr\u00e9s.'}};
+  }
+  if(sub==='eq1'){
     const a=rand(2,6),b=rand(-8,8),c=rand(-10,10);
     const xn=c-b;if(xn%a!==0)return genAl();const xv=xn/a;
-    const w=[xv+1,xv-1,xv+2,xv-2].filter(v=>v!==xv).slice(0,3);
-    return{text:"Résous l'équation.",math:`${a}x ${b>=0?'+ ':''}${b} = ${c}`,
-      choices:sh([{v:xv,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>`x = ${v}`,subtype:'eq1',
-      explain:{answer:`x = ${xv}`,steps:[
-        {num:'Isoler x',text:`Soustrait ${b} des deux membres.`,math:`${a}x = ${c-b}`},
-        {num:'Diviser',text:`Divise par ${a}.`,math:`x = ${xv}`},
-        {num:'Vérif',text:'',math:`${a}×${xv}+${b}=${a*xv+b} ✓`}],
-        tip:'ax+b=c → x=(c−b)/a. Toujours vérifier en substituant !'}};
+    const w=[xv+1,xv-1,xv+2].filter(v=>v!==xv).slice(0,3);
+    return{text:'R\u00e9sous l\'\u00e9quation.',math:''+a+'x '+(b>=0?'+ ':'')+b+' = '+c,
+      choices:sh([{v:xv,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>'x = '+v,subtype:'eq1',
+      explain:{answer:'x = '+xv,steps:[
+        {num:'Isoler x',text:'Soustraire '+b,math:a+'x = '+(c-b)},
+        {num:'Diviser par '+a,text:'',math:'x = '+xv},
+        {num:'V\u00e9rif',text:'',math:a+'\u00d7'+xv+'+'+b+'='+( a*xv+b)+' \u2713'}],
+        tip:'ax+b=c \u2192 x=(c\u2212b)/a. Toujours v\u00e9rifier.'}};
   }
-  // Développer une expression — identités remarquables (pré-2nde)
-  const a=rand(1,5),b=rand(1,5);const r1=a*a,r2=2*a*b,r3=b*b;
-  const correct=`${r1}x²+${r2}x+${r3}`;
-  const w=[`${r1}x²+${a*b}x+${r3}`,`${r1}x²+${r2}x+${r3+1}`,`${r1+1}x²+${r2}x+${r3}`];
-  return{text:"Développe avec l'identité remarquable.",math:`(${a}x + ${b})²`,
+  if(sub==='ineq'){
+    const a=rand(2,5),b=rand(-6,6),c=rand(-8,8);
+    const xn=c-b;if(xn%a!==0)return genAl();const xv=xn/a;
+    const sgn=pick(['<','>','\u2264','\u2265']);const flip=sgn==='<'?'>':sgn==='>'?'<':sgn==='\u2264'?'\u2265':'\u2264';
+    const correct='x '+sgn+' '+xv;
+    const w=['x '+sgn+' '+(xv+1),'x '+flip+' '+xv,'x '+sgn+' '+(xv-1)].filter(v=>v!==correct).slice(0,3);
+    return{text:'R\u00e9sous l\'in\u00e9quation.',math:a+'x '+(b>=0?'+ ':'')+b+' '+sgn+' '+c,
+      choices:sh([{v:correct,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>v,subtype:'eq1',
+      explain:{answer:correct,steps:[
+        {num:'Isoler x',text:'M\u00eame m\u00e9thode qu\'\u00e9quation',math:a+'x '+sgn+' '+(c-b)},
+        {num:'Diviser (a>0)',text:'Signe conserv\u00e9',math:correct}],
+        tip:'Si on divise par un n\u00e9gatif, le signe se retourne !'}};
+  }
+  // fac: factoriser simple
+  const a=rand(2,5),b=rand(1,4);const r1=a*a,r2=2*a*b,r3=b*b;
+  const correct='('+a+'x + '+b+')\u00b2';
+  const w=['('+a+'x \u2212 '+b+')\u00b2','('+(a+1)+'x + '+b+')\u00b2','('+a+'x + '+(b+1)+')\u00b2'].filter(v=>v!==correct).slice(0,3);
+  return{text:'Factorise.',math:r1+'x\u00b2 + '+r2+'x + '+r3,
     choices:sh([{v:correct,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>v,subtype:'ir',
     explain:{answer:correct,steps:[
-      {num:'(a+b)²=a²+2ab+b²',text:`a=${a}x, b=${b}`,math:`(${a}x)²+2×${a}x×${b}+(${b})²`},
-      {num:'Résultat',text:'',math:correct}],
-      tip:'Identités : (a+b)²=a²+2ab+b² · (a-b)²=a²-2ab+b² · (a+b)(a-b)=a²-b²'}};
+      {num:'Reconnatre a\u00b2+2ab+b\u00b2',text:'\u221a'+r1+'x\u00b2='+a+'x, 2ab='+r2+', \u221a'+r3+'='+b,math:correct}],
+      tip:'Identifier a et b, puis v\u00e9rifier que 2ab correspond.'}};
 }
 
 // ── GÉOMÉTRIE (ge) ────────────────────────────────
@@ -790,48 +900,119 @@ function genAl(){
 function genGe(){
   const lv=curDiff;
   if(lv==='facile'){
-    // Angles dans un triangle
-    const a1=rand(30,80),a2=rand(20,80);const a3=180-a1-a2;
-    if(a3<=0||a3>=180)return genGe();
-    const w=[a3+5,a3-5,a3+10,a3-10].filter(v=>v>0&&v<180&&v!==a3).slice(0,3);
-    return{text:'Somme des angles = 180°. Trouve le 3ème angle.',math:`α=${a1}°,  β=${a2}°,  γ=?`,
-      choices:sh([{v:a3,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>`γ=${v}°`,subtype:'tri',
-      explain:{answer:`γ=${a3}°`,steps:[
-        {num:'Règle fondamentale',text:'α+β+γ=180° dans tout triangle.',math:`γ=180°−${a1}°−${a2}°=${a3}°`}],
-        tip:'Propriété incontournable : la somme des angles d\'un triangle est toujours 180°.'}};
+    const sub=pick(['pyth','aire','angles']);
+    if(sub==='pyth'){
+      const pyts=[[3,4,5],[5,12,13],[6,8,10],[8,15,17],[9,12,15]];
+      const[a,b,c]=pick(pyts);const w=[c+1,c-1,c+2].filter(v=>v>0&&v!==c).slice(0,3);
+      return{text:'Triangle rectangle. Calcule l\'hypot\u00e9nuse.',math:'a = '+a+' cm,  b = '+b+' cm',
+        choices:sh([{v:c,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>'c = '+v+' cm',subtype:'pyth',
+        explain:{answer:'c = '+c+' cm',steps:[
+          {num:'Pythagore',text:'c\u00b2=a\u00b2+b\u00b2',math:a+'\u00b2+'+b+'\u00b2='+(a*a+b*b)},
+          {num:'Racine',text:'',math:'c=\u221a'+(a*a+b*b)+'='+c+' cm'}],
+          tip:'Pythagore dans un triangle rectangle. c = plus grand c\u00f4t\u00e9.'}};
+    }
+    if(sub==='aire'){
+      const type=pick(['rect','tri','disque']);
+      if(type==='rect'){
+        const l=rand(3,12),w2=rand(3,12);const aire=l*w2;
+        const wrong=[aire+l,aire-w2,l*l].filter(v=>v>0&&v!==aire).slice(0,3);
+        return{text:'Calcule l\'aire du rectangle.',math:'l = '+l+' cm, L = '+w2+' cm',
+          choices:sh([{v:aire,ok:true},...wrong.map(v=>({v,ok:false}))]),fmt:v=>'A = '+v+' cm\u00b2',subtype:'aire',
+          explain:{answer:'A = '+aire+' cm\u00b2',steps:[{num:'Formule',text:'l \u00d7 L',math:l+' \u00d7 '+w2+' = '+aire}],
+            tip:'Rectangle : A = longueur \u00d7 largeur.'}};
+      }
+      if(type==='tri'){
+        const b=rand(4,12),h=rand(3,10);const aire=Math.round(b*h/2);
+        const wrong=[b*h,aire+b,aire-1].filter(v=>v>0&&v!==aire).slice(0,3);
+        return{text:'Calcule l\'aire du triangle.',math:'base = '+b+' cm, hauteur = '+h+' cm',
+          choices:sh([{v:aire,ok:true},...wrong.map(v=>({v,ok:false}))]),fmt:v=>'A = '+v+' cm\u00b2',subtype:'aire',
+          explain:{answer:'A = '+aire+' cm\u00b2',steps:[{num:'Formule',text:'base \u00d7 hauteur / 2',math:b+' \u00d7 '+h+' / 2 = '+aire}],
+            tip:'Triangle : A = (base \u00d7 hauteur) / 2.'}};
+      }
+      const r=rand(2,7);const aire=Math.round(Math.PI*r*r);
+      const wrong=[Math.round(2*Math.PI*r),aire+5,aire-5].filter(v=>v>0&&v!==aire).slice(0,3);
+      return{text:'Aire du disque (arrondi).',math:'r = '+r+' cm',
+        choices:sh([{v:aire,ok:true},...wrong.map(v=>({v,ok:false}))]),fmt:v=>'A \u2248 '+v+' cm\u00b2',subtype:'aire',
+        explain:{answer:'A \u2248 '+aire+' cm\u00b2',steps:[{num:'Formule',text:'\u03c0r\u00b2',math:'\u03c0\u00d7'+r+'\u00b2 \u2248 '+aire}],
+          tip:'Disque : A = \u03c0r\u00b2. Primetre (cercle) = 2\u03c0r.'}};
+    }
+    // angles: angles suppl\u00e9mentaires
+    const a=rand(20,160);const b=180-a;const w=[b+5,b-5,360-a].filter(v=>v>0&&v!==b).slice(0,3);
+    return{text:'Angles suppl\u00e9mentaires : si A = '+a+'\u00b0, B = ?',math:'A + B = 180\u00b0',
+      choices:sh([{v:b,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>'B = '+v+'\u00b0',subtype:'angles',
+      explain:{answer:'B = '+b+'\u00b0',steps:[{num:'Suppl\u00e9mentaires',text:'A + B = 180\u00b0',math:'B = 180 \u2212 '+a+' = '+b}],
+        tip:'Suppl\u00e9mentaires : A+B=180\u00b0. Compl\u00e9mentaires : A+B=90\u00b0.'}};
   }
   if(lv==='moyen'){
-    // Pythagore — trouver l'hypoténuse ou un côté
-    const pyts=[[3,4,5],[5,12,13],[6,8,10],[8,15,17],[9,12,15],[7,24,25]];
-    const[a,b,c]=pick(pyts);
-    const t=pick(['hyp','leg']);
-    if(t==='hyp'){
-      const w=[c+1,c-1,c+2].filter(v=>v>0&&v!==c).slice(0,3);
-      return{text:"Triangle rectangle. Calcule l'hypoténuse.",math:`a=${a} cm,  b=${b} cm`,
-        choices:sh([{v:c,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>`c=${v} cm`,subtype:'pyth',
-        explain:{answer:`c=${c} cm`,steps:[
-          {num:'Pythagore',text:'c²=a²+b²',math:`${a}²+${b}²=${a*a+b*b}`},
-          {num:'Racine',text:'',math:`c=√${a*a+b*b}=${c} cm`}],
-          tip:'c²=a²+b² : l\'hypoténuse est en face de l\'angle droit. On extrait ensuite la racine carrée.'}};
+    const sub=pick(['thales','pyth2','angles2']);
+    if(sub==='thales'){
+      const AB=rand(4,12),AC=rand(4,12),AD=rand(2,AB-1);
+      const AE=Math.round(AD*AC/AB*10)/10;
+      const w=[AE+0.5,AE-0.5,AE+1].filter(v=>v>0&&v!==AE).slice(0,3);
+      return{text:'Thal\u00e8s : (DE)\u2225(BC). Calcule AE.',math:'AB='+AB+', AC='+AC+', AD='+AD,
+        choices:sh([{v:AE,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>'AE = '+v,subtype:'thales',
+        explain:{answer:'AE = '+AE,steps:[
+          {num:'Thal\u00e8s',text:'AD/AB = AE/AC',math:AD+'/'+AB+' = AE/'+AC},
+          {num:'Calcul',text:'',math:'AE = '+AD+'\u00d7'+AC+'\u00f7'+AB+' = '+AE}],
+          tip:'Thal\u00e8s : rapports \u00e9gaux quand les droites sont parall\u00e8les.'}};
     }
-    const w2=[a+1,a-1,a+2].filter(v=>v>0&&v!==a).slice(0,3);
-    return{text:"Triangle rectangle. Trouve le côté manquant.",math:`Hypoténuse=${c} cm,  côté=${b} cm`,
-      choices:sh([{v:a,ok:true},...w2.map(v=>({v,ok:false}))]),fmt:v=>`côté=${v} cm`,subtype:'pyth2',
-      explain:{answer:`côté=${a} cm`,steps:[
-        {num:'Pythagore',text:'a²=c²−b²',math:`${c}²−${b}²=${c*c-b*b}`},
-        {num:'Racine',text:'',math:`a=√${c*c-b*b}=${a} cm`}],
-        tip:'Pour un côté: a²=c²−b². Toujours repérer l\'hypoténuse (face à l\'angle droit) d\'abord.'}};
+    if(sub==='pyth2'){
+      // find a leg given hyp and other leg
+      const pyts=[[3,4,5],[5,12,13],[8,15,17],[6,8,10]];
+      const[a,b,c]=pick(pyts);const miss=pick(['a','b']);
+      const given=miss==='a'?b:a;const hyp=c;const result=miss==='a'?a:b;
+      const w=[result+1,result-1,result+2].filter(v=>v>0&&v!==result).slice(0,3);
+      return{text:'Triangle rectangle. Calcule le c\u00f4t\u00e9 manquant.',math:'hypot\u00e9nuse = '+hyp+', c\u00f4t\u00e9 = '+given,
+        choices:sh([{v:result,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>'c\u00f4t\u00e9 = '+v+' cm',subtype:'pyth2',
+        explain:{answer:'c\u00f4t\u00e9 = '+result+' cm',steps:[
+          {num:'Pythagore',text:'a\u00b2+b\u00b2=c\u00b2 \u2192 a\u00b2=c\u00b2-b\u00b2',math:hyp+'\u00b2-'+given+'\u00b2='+(hyp*hyp-given*given)},
+          {num:'Racine',text:'',math:'\u221a'+(hyp*hyp-given*given)+' = '+result}],
+          tip:'Si on cherche un c\u00f4t\u00e9 : a\u00b2 = c\u00b2 \u2212 b\u00b2 (non l\'hypot\u00e9nuse).'}};
+    }
+    // angles2: somme des angles d'un triangle
+    const a=rand(30,80),b=rand(30,80);if(a+b>=180)return genGe();const c=180-a-b;
+    const w=[c+5,c-5,360-a-b].filter(v=>v>0&&v!==c).slice(0,3);
+    return{text:'Somme des angles = 180\u00b0. Trouve le 3e angle.',math:'A = '+a+'\u00b0, B = '+b+'\u00b0',
+      choices:sh([{v:c,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>'C = '+v+'\u00b0',subtype:'angles',
+      explain:{answer:'C = '+c+'\u00b0',steps:[
+        {num:'Propri\u00e9t\u00e9',text:'A+B+C = 180\u00b0',math:'C = 180\u00b0 \u2212 '+a+'\u00b0 \u2212 '+b+'\u00b0 = '+c+'\u00b0'}],
+        tip:'La somme des angles d\'un triangle est toujours 180\u00b0.'}};
   }
-  // Thalès
-  const AB=rand(4,12),AC=rand(4,12),AD=rand(2,AB-1);
-  const AE=Math.round(AD*AC/AB*10)/10;
-  const w=[+(AE+0.5).toFixed(1),+(AE-0.5).toFixed(1),+(AE+1).toFixed(1)].filter(v=>v>0&&v!==AE).slice(0,3);
-  return{text:'(DE)∥(BC). Calcule AE (théorème de Thalès).',math:`AB=${AB},  AC=${AC},  AD=${AD}`,
-    choices:sh([{v:AE,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>`AE=${v}`,subtype:'thales',
-    explain:{answer:`AE=${AE}`,steps:[
-      {num:'Thalès',text:'AD/AB = AE/AC',math:`${AD}/${AB}=AE/${AC}`},
-      {num:'Résoudre',text:'',math:`AE=${AD}×${AC}÷${AB}=${AE}`}],
-      tip:'Thalès : les rapports de longueurs sont égaux quand les droites sont parallèles.'}};
+  // difficile: trigo
+  const sub=pick(['trigo','thales2','perim']);
+  if(sub==='trigo'){
+    const angles=[{deg:30,sin:.5,cos:.87,tan:.58},{deg:45,sin:.71,cos:.71,tan:1},{deg:60,sin:.87,cos:.5,tan:1.73}];
+    const angle=pick(angles);const fn=pick(['sin','cos','tan']);const val=fn==='sin'?angle.sin:fn==='cos'?angle.cos:angle.tan;
+    const w=[+(val+.1).toFixed(2),+(val-.1).toFixed(2),+(val+.2).toFixed(2)].filter(v=>v>0&&v!==val).slice(0,3);
+    return{text:'Donne la valeur (arrondie).',math:fn+'('+angle.deg+'\u00b0)',
+      choices:sh([{v:val,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>'\u2248 '+v,subtype:'tri',
+      explain:{answer:fn+'('+angle.deg+'\u00b0) \u2248 '+val,steps:[
+        {num:'SOH-CAH-TOA',text:'sin=opp/hyp \u00b7 cos=adj/hyp \u00b7 tan=opp/adj',math:fn+'('+angle.deg+'\u00b0) \u2248 '+val}],
+        tip:'sin30\u00b0=0.5, cos45\u00b0=0.71, tan45\u00b0=1, sin60\u00b0=0.87'}};
+  }
+  if(sub==='thales2'){
+    const AB=rand(6,15),AC=rand(6,15),AE=rand(2,AC-1);
+    const AD=Math.round(AE*AB/AC*10)/10;
+    const w=[AD+0.5,AD-0.5,AD+1].filter(v=>v>0&&v!==AD).slice(0,3);
+    return{text:'Thal\u00e8s. Calcule AD.',math:'AB='+AB+', AC='+AC+', AE='+AE+', (DE)\u2225(BC)',
+      choices:sh([{v:AD,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>'AD = '+v,subtype:'thales',
+      explain:{answer:'AD = '+AD,steps:[
+        {num:'AD/AB = AE/AC',text:'',math:'AD/'+AB+' = '+AE+'/'+AC+' \u2192 AD = '+AD}],
+        tip:'Thal\u00e8s : tous les rapports sont \u00e9gaux.'}};
+  }
+  // perim: p\u00e9rim\u00e8tre
+  const type=pick(['rect','tri_eq','cercle']);
+  if(type==='rect'){const l=rand(3,12),w2=rand(3,12);const p=2*(l+w2);const wrong=[l+w2,p+2,p-2].filter(v=>v!==p).slice(0,3);
+    return{text:'P\u00e9rim\u00e8tre du rectangle.',math:'l = '+l+' cm, L = '+w2+' cm',choices:sh([{v:p,ok:true},...wrong.map(v=>({v,ok:false}))]),fmt:v=>'P = '+v+' cm',subtype:'aire',
+      explain:{answer:'P = '+p+' cm',steps:[{num:'P = 2(l+L)',text:'',math:'2\u00d7('+l+'+'+w2+') = '+p}],tip:'P\u00e9rim\u00e8tre rectangle = 2\u00d7(longueur+largeur).'}};
+  }
+  if(type==='tri_eq'){const a=rand(4,10);const p=3*a;const wrong=[p+a,p-a,p+2].filter(v=>v!==p).slice(0,3);
+    return{text:'P\u00e9rim\u00e8tre du triangle \u00e9quilat\u00e9ral.',math:'c\u00f4t\u00e9 = '+a+' cm',choices:sh([{v:p,ok:true},...wrong.map(v=>({v,ok:false}))]),fmt:v=>'P = '+v+' cm',subtype:'aire',
+      explain:{answer:'P = '+p+' cm',steps:[{num:'P = 3\u00d7a',text:'',math:'3\u00d7'+a+' = '+p}],tip:'\u00c9quilat\u00e9ral : 3 c\u00f4t\u00e9s \u00e9gaux.'}};
+  }
+  const r=rand(2,8);const p=Math.round(2*Math.PI*r);const wrong=[Math.round(Math.PI*r*r),p+2,p-2].filter(v=>v!==p).slice(0,3);
+  return{text:'P\u00e9rim\u00e8tre du cercle (arrondi).',math:'r = '+r+' cm',choices:sh([{v:p,ok:true},...wrong.map(v=>({v,ok:false}))]),fmt:v=>'P \u2248 '+v+' cm',subtype:'aire',
+    explain:{answer:'P \u2248 '+p+' cm',steps:[{num:'P = 2\u03c0r',text:'',math:'2\u00d7\u03c0\u00d7'+r+' \u2248 '+p}],tip:'Circonf\u00e9rence = 2\u03c0r.'}};
 }
 
 // ── STATISTIQUES & PROBABILITÉS (st) ──────────────
@@ -839,37 +1020,110 @@ function genGe(){
 function genSt(){
   const lv=curDiff;
   if(lv==='facile'){
-    // Fréquence en pourcentage
-    const total=rand(20,50);const fav=rand(1,total-1);
-    const pct=Math.round(fav/total*100);
-    const w=[pct+5,pct-5,pct+10,Math.round(fav*2/total*100)].filter(v=>v>=0&&v<=100&&v!==pct).slice(0,3);
-    return{text:`${total} élèves, ${fav} ont eu la moyenne. Fréquence en % ?`,math:'',
-      choices:sh([{v:pct,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>`${v}%`,subtype:'freq',
-      explain:{answer:`${pct}%`,steps:[
-        {num:'Fréquence',text:'f = effectif partiel ÷ effectif total × 100',math:`${fav}÷${total}×100≈${pct}%`}],
-        tip:'Fréquence % = (effectif ÷ total) × 100. Résultat toujours entre 0% et 100%.'}};
+    const sub=pick(['freq','mode','etendue']);
+    if(sub==='freq'){
+      const total=rand(10,20);const fav=rand(1,total-1);
+      const pct=Math.round(fav/total*100);
+      const w=[pct+5,pct-5,pct+10].filter(v=>v>=0&&v<=100&&v!==pct).slice(0,3);
+      return{text:'Fr\u00e9quence en % de '+fav+' parmi '+total+' ?',math:'',
+        choices:sh([{v:pct,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>v+'%',subtype:'freq',
+        explain:{answer:pct+'%',steps:[
+          {num:'Fr\u00e9quence',text:'',math:fav+'/'+total+' \u00d7 100 = '+pct+'%'}],
+          tip:'Fr\u00e9quence = (effectif/total) \u00d7 100'}};
+    }
+    if(sub==='mode'){
+      const base=rand(2,8);const n=rand(4,7);
+      const vals=[...Array.from({length:n-2},()=>rand(1,10)),base,base];
+      vals.sort((a,b)=>a-b);
+      const w=[base+1,base-1,vals[0]].filter(v=>v!==base&&v>0).slice(0,3);
+      return{text:'Quel est le mode (valeur la plus fr\u00e9quente) ?',math:vals.join(' ; '),
+        choices:sh([{v:base,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>'Mode = '+v,subtype:'freq',
+        explain:{answer:'Mode = '+base,steps:[
+          {num:'Compter',text:base+' appara\u00eet 2 fois, les autres 1 fois',math:'Mode = '+base}],
+          tip:'Mode = valeur qui revient le plus souvent.'}};
+    }
+    // etendue
+    const n=rand(4,7);const vals=Array.from({length:n},()=>rand(1,20));
+    const mn=Math.min(...vals),mx=Math.max(...vals);const et=mx-mn;
+    const w=[et+1,et-1,et+2].filter(v=>v>0&&v!==et).slice(0,3);
+    return{text:'\u00c9tendue de cette s\u00e9rie ?',math:vals.join(' ; '),
+      choices:sh([{v:et,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>'\u00c9tendue = '+v,subtype:'freq',
+      explain:{answer:'\u00c9tendue = '+et,steps:[
+        {num:'Max \u2212 Min',text:'',math:mx+' \u2212 '+mn+' = '+et}],
+        tip:'\u00c9tendue = valeur max \u2212 valeur min.'}};
   }
   if(lv==='moyen'){
-    // Moyenne simple
-    const n=rand(4,6);const vals=Array.from({length:n},()=>rand(4,18));
-    const sum=vals.reduce((a,b)=>a+b,0);const mean=Math.round(sum/n*10)/10;
-    const w=[+(mean+.5).toFixed(1),+(mean-.5).toFixed(1),+(mean+1).toFixed(1)].filter(v=>v!==mean).slice(0,3);
-    return{text:'Calcule la moyenne de ces valeurs.',math:vals.join(' ; '),
-      choices:sh([{v:mean,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>`Moy = ${v}`,subtype:'mean',
-      explain:{answer:`Moyenne = ${mean}`,steps:[
-        {num:'Somme',text:'',math:`${vals.join('+')}=${sum}`},
-        {num:'Diviser',text:`par ${n}`,math:`${sum}÷${n}=${mean}`}],
-        tip:'Moyenne = somme de toutes les valeurs ÷ nombre de valeurs.'}};
+    const sub=pick(['mean','median','moy_pond']);
+    if(sub==='mean'){
+      const n=rand(4,6);const vals=Array.from({length:n},()=>rand(4,18));
+      const sum=vals.reduce((a,b)=>a+b,0);const mean=Math.round(sum/n*10)/10;
+      const w=[+(mean+.5).toFixed(1),+(mean-.5).toFixed(1),+(mean+1).toFixed(1)].filter(v=>+(v).toFixed(1)!==+(mean).toFixed(1)).slice(0,3);
+      return{text:'Calcule la moyenne.',math:vals.join(' ; '),
+        choices:sh([{v:mean,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>'Moy = '+v,subtype:'mean',
+        explain:{answer:'Moy = '+mean,steps:[
+          {num:'Somme\u00f7effectif',text:'',math:'('+vals.join('+')+') \u00f7 '+n+' = '+mean}],
+          tip:'Moyenne = total \u00f7 nombre de valeurs.'}};
+    }
+    if(sub==='median'){
+      const n=rand(5,7);const vals=Array.from({length:n},()=>rand(1,20)).sort((a,b)=>a-b);
+      const isEven=(n%2===0);
+      const med=isEven?(vals[n/2-1]+vals[n/2])/2:vals[Math.floor(n/2)];
+      const w=[+(med+1).toFixed(1),+(med-1).toFixed(1),+(med+0.5).toFixed(1)].filter(v=>+(v).toFixed(1)!==+(med).toFixed(1)).slice(0,3);
+      return{text:'M\u00e9diane (s\u00e9rie tri\u00e9e) ?',math:vals.join(' < '),
+        choices:sh([{v:med,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>'M\u00e9diane = '+v,subtype:'mean',
+        explain:{answer:'M\u00e9diane = '+med,steps:[
+          {num:'N valeurs: '+n,text:isEven?'pair \u2192 moyenne des 2 centraux':'impair \u2192 valeur centrale',
+            math:isEven?'('+vals[n/2-1]+'+'+vals[n/2]+')/2 = '+med:'rang '+(Math.floor(n/2)+1)+' = '+med}],
+          tip:'M\u00e9diane = milieu. Pair : moyenne des 2 valeurs centrales.'}};
+    }
+    // moy_pond: moyenne pond\u00e9r\u00e9e
+    const v1=rand(5,15),v2=rand(5,15),v3=rand(5,15);
+    const n1=rand(2,6),n2=rand(2,6),n3=rand(2,6);
+    const sum=v1*n1+v2*n2+v3*n3;const tot=n1+n2+n3;
+    const mean=Math.round(sum/tot*10)/10;
+    const w=[+(mean+.5).toFixed(1),+(mean-.5).toFixed(1),+(mean+1).toFixed(1)].filter(v=>+(v).toFixed(1)!==+(mean).toFixed(1)).slice(0,3);
+    return{text:'Calcule la moyenne pond\u00e9r\u00e9e.',math:v1+' (\u00d7'+n1+') ; '+v2+' (\u00d7'+n2+') ; '+v3+' (\u00d7'+n3+')',
+      choices:sh([{v:mean,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>'Moy = '+v,subtype:'mean',
+      explain:{answer:'Moy = '+mean,steps:[
+        {num:'Somme pond\u00e9r\u00e9e',text:'',math:v1+'\u00d7'+n1+'+'+v2+'\u00d7'+n2+'+'+v3+'\u00d7'+n3+'='+sum},
+        {num:'\u00f7 Total effectifs',text:'',math:sum+'/'+tot+' = '+mean}],
+        tip:'Moy pond\u00e9r\u00e9e = \u03a3(valeur\u00d7effectif) / \u03a3effectifs'}};
   }
-  // Probabilité
-  const total=rand(10,24);const fav=rand(1,total-1);
-  const[sn,sd]=simp(fav,total);const w=wf(sn,sd,3);
-  return{text:`Sac: ${total} billes, ${fav} rouges. Probabilité de tirer rouge ?`,math:'',
-    choices:sh([{v:`${sn}/${sd}`,ok:true},...w.map(x=>({v:`${x.n}/${x.d}`,ok:false}))]),
+  // difficile
+  const sub=pick(['proba','proba2','proba_cond']);
+  if(sub==='proba'){
+    const total=rand(10,24),fav=rand(1,total-1);
+    const[sn,sd]=simp(fav,total);const w=wf(sn,sd,3);
+    return{text:'Urne : '+total+' boules, '+fav+' rouges. P(rouge) ?',math:'',
+      choices:sh([{v:sn+'/'+sd,ok:true},...w.map(x=>({v:x.n+'/'+x.d,ok:false}))]),
+      fmt:v=>{const[a,b]=v.split('/');return F(a,b);},subtype:'proba',
+      explain:{answer:F(sn,sd),steps:[
+        {num:'P = fav/total',text:'',math:fav+'/'+total+' = '+sn+'/'+sd}],
+        tip:'Probabilit\u00e9 = cas favorables / cas possibles.'}};
+  }
+  if(sub==='proba2'){
+    const total=rand(12,30),r=rand(3,total/2)|0,b=rand(3,total/2)|0;
+    const v=total-r-b;if(v<1)return genSt();
+    const sub2=pick(['r','b','pas_r']);
+    const fav=sub2==='r'?r:sub2==='b'?b:total-r;
+    const[sn,sd]=simp(fav,total);const w=wf(sn,sd,3);
+    const desc=sub2==='r'?'rouge':sub2==='b'?'bleue':'pas rouge';
+    return{text:'Urne : '+r+' rouges, '+b+' bleues, '+v+' vertes. P('+desc+') ?',math:'',
+      choices:sh([{v:sn+'/'+sd,ok:true},...w.map(x=>({v:x.n+'/'+x.d,ok:false}))]),
+      fmt:v=>{const[a,b2]=v.split('/');return F(a,b2);},subtype:'proba',
+      explain:{answer:F(sn,sd),steps:[
+        {num:'Cas favorables',text:desc+' = '+fav,math:fav+'/'+total+' = '+sn+'/'+sd}],
+        tip:'\"Pas rouge\" = vert + bleu. P(compl\u00e9mentaire) = 1 \u2212 P(\u00e9v\u00e9nement).'}};
+  }
+  // proba_cond (compl\u00e9mentaire)
+  const total=rand(10,20);const fav=rand(2,total-2);
+  const[sn,sd]=simp(fav,total);const[sn2,sd2]=simp(total-fav,total);const w=wf(sn2,sd2,3);
+  return{text:'P(A) = '+F(sn,sd)+'. Quelle est P(non A) ?',math:'',
+    choices:sh([{v:sn2+'/'+sd2,ok:true},...w.map(x=>({v:x.n+'/'+x.d,ok:false}))]),
     fmt:v=>{const[a,b]=v.split('/');return F(a,b);},subtype:'proba',
-    explain:{answer:F(sn,sd),steps:[
-      {num:'P = favorables / total',text:'',math:`${fav}÷${total}=${sn}/${sd}`}],
-      tip:'Probabilité entre 0 et 1. P=0 impossible, P=1 certain. Toujours simplifier la fraction !'}};
+    explain:{answer:F(sn2,sd2),steps:[
+      {num:'P(non A) = 1 \u2212 P(A)',text:'',math:'1 \u2212 '+F(sn,sd)+' = '+F(sd-sn,sd)+' = '+F(sn2,sd2)}],
+      tip:'P(non A) = 1 \u2212 P(A). Les probabilit\u00e9s s\'additionnent \u00e0 1.'}};
 }
 
 // ── NOMBRES RELATIFS & PUISSANCES (no) ────────────
@@ -877,59 +1131,93 @@ function genSt(){
 function genNo(){
   const lv=curDiff;
   if(lv==='facile'){
-    // Nombres relatifs — opérations
-    const a=rand(-8,8)||1,b=rand(-8,8)||1;
-    const op=pick(['+','-','×']);
-    const res=op==='+'?a+b:op==='-'?a-b:a*b;
-    const w=[res+1,res-1,res+2,res-2].filter(v=>v!==res).slice(0,3);
-    return{text:'Calcule (nombres relatifs).',math:`(${a}) ${op} (${b})`,
-      choices:sh([{v:res,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>v,subtype:'rel',
-      explain:{answer:`= ${res}`,steps:[
-        op==='×'?{num:'Règle signe ×',text:'(+)×(+)=(+) · (−)×(−)=(+) · signes ≠ → (−)',math:`${a}×${b}=${res}`}
-        :{num:'Calcul',text:`Placer sur la droite numérique.`,math:`(${a})${op}(${b})=${res}`}],
-        tip:'×: même signe→(+), signes différents→(−). Addition: utiliser la droite numérique.'}};
+    const sub=pick(['rel_add','rel_mul','abs_val']);
+    if(sub==='rel_add'){
+      const a=rand(-8,8)||1,b=rand(-8,8)||1;const op=pick(['+','-']);const res=op==='+'?a+b:a-b;
+      const w=[res+1,res-1,res+2].filter(v=>v!==res).slice(0,3);
+      return{text:'Calcule.',math:'('+a+') '+op+' ('+b+')',
+        choices:sh([{v:res,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>'= '+v,subtype:'rel',
+        explain:{answer:'= '+res,steps:[{num:'M\u00eame signe : additionner',text:'Signes diff : soustraire, signe du + grand',math:'= '+res}],
+          tip:'M\u00eame signe \u2192 additionner. Signes diff\u00e9rents \u2192 soustraire, garder le signe du plus grand.'}};
+    }
+    if(sub==='rel_mul'){
+      const a=rand(-5,5)||1,b=rand(-5,5)||1;const res=a*b;
+      const w=[res+2,res-2,-res].filter(v=>v!==res).slice(0,3);
+      return{text:'Calcule.',math:'('+a+') \u00d7 ('+b+')',
+        choices:sh([{v:res,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>'= '+v,subtype:'rel',
+        explain:{answer:'= '+res,steps:[{num:'Signe du produit',text:'(+)\u00d7(+)=(+) \u00b7 (\u2212)\u00d7(\u2212)=(+) \u00b7 signes diff\u00e9rents=(\u2212)',math:'= '+res}],
+          tip:'M\u00eame signe \u2192 positif. Signes diff\u00e9rents \u2192 n\u00e9gatif.'}};
+    }
+    // abs_val
+    const a=rand(-8,8);const r=Math.abs(a);
+    return{text:'Calcule la valeur absolue.',math:'|'+a+'|',
+      choices:sh([{v:r,ok:true},{v:-r,ok:false},{v:r+1,ok:false}]),fmt:v=>'= '+v,subtype:'rel',
+      explain:{answer:'= '+r,steps:[{num:'|x| = distance \u00e0 0',text:'Toujours positive',math:'|'+a+'| = '+r}],
+        tip:'Valeur absolue = distance \u00e0 0. Toujours positive ou nulle.'}};
   }
   if(lv==='moyen'){
-    // PGCD par décomposition ou Euclide
-    const b=rand(2,8),k=rand(2,5),r=rand(1,b-1);const a=b*k+r;
-    const g=gcd(a,b);
-    const w=[g+1,g===1?2:g-1,b,Math.min(a,b)].filter(v=>v>0&&v!==g&&v!==g+1).slice(0,3);
-    return{text:`Calcule le PGCD de ${a} et ${b}.`,math:'',
-      choices:sh([{v:g,ok:true},...w.slice(0,3).map(v=>({v,ok:false}))]),fmt:v=>`PGCD=${v}`,subtype:'pgcd',
-      explain:{answer:`PGCD(${a},${b})=${g}`,steps:[
-        {num:'Euclide',text:`${a}=${Math.floor(a/b)}×${b}+${a%b}`,math:`reste=${a%b}`},
-        {num:'PGCD(${b},${a%b})',text:'Continuer jusqu\'au reste 0.',math:`PGCD=${g}`}],
-        tip:'Algorithme d\'Euclide: PGCD(a,b)=PGCD(b,reste). Répéter jusqu\'au reste 0.'}};
+    const sub=pick(['pgcd','pow1','powneg']);
+    if(sub==='pgcd'){
+      const g=pick([2,3,4,5,6]);const a=g*rand(2,8),b=g*rand(2,8);const rg=gcd(a,b);
+      const w=[rg+1,rg-1,rg*2].filter(v=>v>0&&v!==rg).slice(0,3);
+      return{text:'Calcule le PGCD.',math:'PGCD('+a+', '+b+')',
+        choices:sh([{v:rg,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>'PGCD = '+v,subtype:'pgcd',
+        explain:{answer:'PGCD = '+rg,steps:[
+          {num:'Algorithme d\'Euclide',text:'',math:a+' = '+b+'\u00d7'+Math.floor(a/b)+' + '+(a%b)}],
+          tip:'PGCD = plus grand diviseur commun. Euclide : diviser jusqu\'\u00e0 reste 0.'}};
+    }
+    if(sub==='pow1'){
+      const base=pick([2,3,5,10]);const n=rand(1,4),m=rand(1,4);
+      const correct=base+'^'+(n+m);
+      const w=[base+'^'+(n*m),base+'^'+(n+m+1),(base+1)+'^'+(n+m)].filter(v=>v!==correct).slice(0,3);
+      return{text:'Simplifie.',math:base+'^'+n+' \u00d7 '+base+'^'+m,
+        choices:sh([{v:correct,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>v,subtype:'pow1',
+        explain:{answer:correct,steps:[{num:'a\u207f\u00d7a\u1d50=a\u207f\u207a\u1d50',text:'',math:base+'^'+(n+m)}],
+          tip:'M\u00eame base : additionner les exposants.'}};
+    }
+    // powneg
+    const base=pick([2,3,4,5,10]);const neg=rand(1,4);const den=Math.pow(base,neg);
+    const correct='1/'+den;
+    const w=[String(den),'1/'+(den+1),'1/'+(den-1)].filter(v=>v!==correct).slice(0,3);
+    return{text:'Que vaut l\'expression ?',math:base+'^(-'+neg+')',
+      choices:sh([{v:correct,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>v,subtype:'pow1',
+      explain:{answer:correct,steps:[{num:'a^(-n)=1/a^n',text:'',math:base+'^'+neg+'='+den+' \u2192 1/'+den}],
+        tip:'Exposant n\u00e9gatif = inverser. a^(-n) = 1/a^n.'}};
   }
-  // Puissances entières
-  const base=pick([2,3,4,5,10]);const n=rand(1,4),m=rand(1,3);
-  const op=pick(['mult','div','pow']);
-  if(op==='mult'){
-    const correct=`${base}^${n+m}`;
-    const w=[`${base}^${n*m}`,`${base+1}^${n+m}`,`${base}^${Math.max(1,n-m)}`];
-    return{text:'Simplifie.',math:`${base}^${n} × ${base}^${m}`,
-      choices:sh([{v:correct,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>v,subtype:'pow',
+  // difficile
+  const sub=pick(['sci','pow_combo','relatifs_div']);
+  if(sub==='sci'){
+    const mantisse=(rand(10,99))/10;const exp=rand(-2,4);
+    const val=+(mantisse*Math.pow(10,exp)).toPrecision(3);
+    const formatted=mantisse+'\u00d710^'+exp;
+    const w=[+(mantisse+.5).toFixed(1)+'\u00d710^'+exp,mantisse+'\u00d710^'+(exp+1)].slice(0,3).map(v=>({v,ok:false}));
+    return{text:'Notation scientifique.',math:String(val),
+      choices:sh([{v:formatted,ok:true},...w,{v:mantisse+'\u00d710^'+(exp-1),ok:false}]),fmt:v=>v,subtype:'sci',
+      explain:{answer:formatted,steps:[{num:'1\u2264'+mantisse+'<10 \u2713',text:'',math:mantisse+'\u00d710^'+exp}],
+        tip:'Mantisse entre 1 et 10. D\u00e9caler virgule = changer exposant.'}};
+  }
+  if(sub==='pow_combo'){
+    const base=pick([2,3]);const a=rand(1,4),b=rand(1,3),c=rand(1,3);const result=a+b-c;
+    if(result<0)return genNo();const correct=base+'^'+result;
+    const w=[base+'^'+(result+1),base+'^'+(result-1),base+'^'+(a+b+c)].filter(v=>v!==correct).slice(0,3);
+    return{text:'Simplifie.',math:base+'^'+a+' \u00d7 '+base+'^'+b+' \u00f7 '+base+'^'+c,
+      choices:sh([{v:correct,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>v,subtype:'pow1',
       explain:{answer:correct,steps:[
-        {num:'Règle produit',text:'Même base → additionner les exposants.',math:`${base}^${n}×${base}^${m}=${base}^${n+m}`}],
-        tip:'aⁿ×aᵐ=aⁿ⁺ᵐ · aⁿ÷aᵐ=aⁿ⁻ᵐ · (aⁿ)ᵐ=aⁿˣᵐ · a⁰=1'}};
+        {num:'Num\u00e9rateur',text:'',math:base+'^('+a+'+'+b+') = '+base+'^'+(a+b)},
+        {num:'Division',text:'',math:base+'^('+(a+b)+'-'+c+') = '+correct}],
+        tip:'Multiplier = additionner exposants. Diviser = soustraire exposants.'}};
   }
-  if(op==='div'&&n>m){
-    const correct=`${base}^${n-m}`;
-    const w=[`${base}^${n+m}`,`${base}^${n*m}`,`${base}^${n}`];
-    return{text:'Simplifie.',math:`${base}^${n} ÷ ${base}^${m}`,
-      choices:sh([{v:correct,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>v,subtype:'pow',
-      explain:{answer:correct,steps:[
-        {num:'Règle quotient',text:'Même base → soustraire les exposants.',math:`${base}^${n-m}`}],
-        tip:'aⁿ÷aᵐ=aⁿ⁻ᵐ (base identique obligatoire !)'}};
-  }
-  // (aⁿ)ᵐ
-  const correct2=`${base}^${n*m}`;
-  const w2=[`${base}^${n+m}`,`${base+1}^${n*m}`,`${base}^${n}`];
-  return{text:'Simplifie.',math:`(${base}^${n})^${m}`,
-    choices:sh([{v:correct2,ok:true},...w2.map(v=>({v,ok:false}))]),fmt:v=>v,subtype:'pow',
-    explain:{answer:correct2,steps:[
-      {num:'Règle puissance',text:'Puissance d\'une puissance → multiplier.',math:`(${base}^${n})^${m}=${base}^${n*m}`}],
-      tip:'(aⁿ)ᵐ=aⁿˣᵐ : multiplier les exposants.'}};
+  // relatifs_div
+  const a=rand(-6,6)||1,b=rand(-4,4)||1;const res=rand(2,5);const prod=a>0?a*res:-a*res;
+  const q=pick([a*res/b,a*res]);
+  const r2=Math.round(a*res/b);
+  const correct=r2;const w=[r2+1,r2-1,-r2].filter(v=>v!==correct).slice(0,3);
+  const num=a*res,denom=b;
+  return{text:'Calcule.',math:'('+num+') \u00f7 ('+denom+')',
+    choices:sh([{v:correct,ok:true},...w.map(v=>({v,ok:false}))]),fmt:v=>'= '+v,subtype:'rel',
+    explain:{answer:'= '+correct,steps:[
+      {num:'Signe',text:num*denom>0?'Signes identiques \u2192 r\u00e9sultat positif':'Signes diff\u00e9rents \u2192 r\u00e9sultat n\u00e9gatif',math:'= '+correct}],
+      tip:'Division de relatifs : m\u00eame r\u00e8gle de signes que la multiplication.'}};
 }
 
 const CATS=[
@@ -1129,6 +1417,14 @@ function doWrong(q,timeout=false){
 }
 
 const EXPL_LINKS={
+  aire:{label:'Calcul d\'aires — Khan Academy 🇫🇷',url:'https://fr.khanacademy.org/math/basic-geo/basic-geo-area-and-perimeter/area-formula-intuition/v/introduction-to-area-and-unit-squares'},
+  cmp:{label:'Comparer des fractions — Khan Academy 🇫🇷',url:'https://fr.khanacademy.org/math/arithmetic/arith-review-fractions/arith-review-comparing-fractions/v/comparing-fractions-with-different-denominators'},
+  div:{label:'Division de fractions — Khan Academy 🇫🇷',url:'https://fr.khanacademy.org/math/arithmetic/arith-review-fractions/arith-review-dividing-fractions/v/dividing-fractions-example'},
+  mixte:{label:'Nombres mixtes — Khan Academy 🇫🇷',url:'https://fr.khanacademy.org/math/arithmetic/arith-review-fractions/arith-review-mixed-numbers/v/mixed-numbers-and-improper-fractions'},
+  mult:{label:'Multiplication de fractions — Khan Academy 🇫🇷',url:'https://fr.khanacademy.org/math/arithmetic/arith-review-fractions/arith-review-multiply-fractions/v/multiplying-fractions'},
+  pow1:{label:'Puissances et exposants — Khan Academy 🇫🇷',url:'https://fr.khanacademy.org/math/pre-algebra/pre-algebra-exponents-radicals/pre-algebra-exponents/v/introduction-to-exponents'},
+  sci:{label:'Notation scientifique — Khan Academy 🇫🇷',url:'https://fr.khanacademy.org/math/pre-algebra/pre-algebra-exponents-radicals/pre-algebra-scientific-notation/v/scientific-notation'},
+  simp:{label:'Simplifier des fractions — Khan Academy 🇫🇷',url:'https://fr.khanacademy.org/math/arithmetic/arith-review-fractions/arith-review-simplest-form/v/simplifying-fractions'},
   pct:{label:'Pourcentages - Khan Academy',url:'https://fr.khanacademy.org/math/arithmetic/arith-review-fractions/arith-review-percentages/v/describing-the-meaning-of-percent'},
   add:{label:'Addition de fractions',url:'https://fr.khanacademy.org/math/arithmetic/arith-review-fractions/arith-review-add-subtract-fractions/v/adding-fractions'},
   prop:{label:'Proportionnalite - regle de 3',url:'https://www.youtube.com/results?search_query=regle+de+trois+proportionnalite+4eme'},
@@ -1261,6 +1557,27 @@ function endGame(){
   show('result');
 }
 
+function updateWalletUI(){
+  const total=totalEarned;
+  const el=document.getElementById('w-total');
+  if(el) el.textContent=total.toFixed(2)+'€';
+  const fill=document.getElementById('w-prog-fill');
+  if(fill) fill.style.width=Math.min(total/5*100,100)+'%';
+  const lbl=document.getElementById('w-prog-label');
+  if(lbl) lbl.textContent=total.toFixed(2)+'€ / 5€';
+  const btn=document.getElementById('w-coupon-btn');
+  if(btn) btn.disabled=(total<5);
+  const hist=document.getElementById('w-history');
+  if(hist){
+    hist.innerHTML='';
+    coupons.slice().reverse().forEach(c=>{
+      const d=document.createElement('div');
+      d.className='w-hist-item';
+      d.innerHTML='<span>'+( c.type==='speed'?'⚡ Bonus rapide':'🏆 Récompense')+'</span><span>+'+c.amount+'€</span>';
+      hist.appendChild(d);
+    });
+  }
+}
 function openWallet(){updateWalletUI();document.getElementById('wallet-modal-ol').classList.add('show');}
 function closeWallet(){document.getElementById('wallet-modal-ol').classList.remove('show');}
 function useCoupon(){
