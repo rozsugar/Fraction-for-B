@@ -537,7 +537,7 @@ h1 .maths{color:var(--accent);}
       <div class="diff-dot"></div>
       <div class="diff-info">
         <div class="diff-label">Facile</div>
-        <div class="diff-sub">8 questions · 20 sec · 100% requis<br>Bonus : tout rapide = +0.50€</div>
+        <div class="diff-sub">8 questions · 25 sec · 100% requis<br>Bonus : tout rapide = +0.50€</div>
       </div>
       <div class="diff-reward">0.50€</div>
     </div>
@@ -553,7 +553,7 @@ h1 .maths{color:var(--accent);}
       <div class="diff-dot"></div>
       <div class="diff-info">
         <div class="diff-label">Difficile</div>
-        <div class="diff-sub" id="dc-diff-sub">12 questions · 30 sec · 100% requis<br>⚡ 3 réponses rapides = +0.50€<br><span style="font-size:.75em;opacity:.8">⚠️ Géométrie Difficile : 50 sec</span></div>
+        <div class="diff-sub" id="dc-diff-sub">12 questions · 40 sec · 100% requis<br>⚡ 3 réponses rapides = +0.50€<br><span style="font-size:.75em;opacity:.8">⚠️ Géométrie Difficile : 50 sec</span></div>
       </div>
       <div class="diff-reward">2€</div>
     </div>
@@ -677,9 +677,9 @@ let consecutiveWrong=0;
 let _retryQ=null;
 
 const DIFF_CONFIG={
-  facile:{qs:8,time:20,reward:0.5,passRatio:1.0},
+  facile:{qs:8,time:25,reward:0.5,passRatio:1.0},
   moyen:{qs:10,time:30,reward:1,passRatio:1.0},
-  difficile:{qs:12,time:30,reward:2,passRatio:1.0}
+  difficile:{qs:12,time:40,reward:2,passRatio:1.0}
 };
 
 const rand=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
