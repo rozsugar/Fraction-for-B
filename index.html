@@ -537,7 +537,7 @@ h1 .maths{color:var(--accent);}
       <div class="diff-dot"></div>
       <div class="diff-info">
         <div class="diff-label">Facile</div>
-        <div class="diff-sub">8 questions · 25 sec · 100% requis<br>Bonus : tout rapide = +0.50€</div>
+        <div class="diff-sub">8 questions · 60 sec · 90% requis<br>Bonus : tout rapide = +0.50€</div>
       </div>
       <div class="diff-reward">0.50€</div>
     </div>
@@ -545,7 +545,7 @@ h1 .maths{color:var(--accent);}
       <div class="diff-dot"></div>
       <div class="diff-info">
         <div class="diff-label">Moyen</div>
-        <div class="diff-sub" id="dc-moyen-sub">10 questions · 30 sec · 100% requis<br>⚡ 3 réponses rapides = +0.50€<br><span style="font-size:.75em;opacity:.8">⚠️ Géométrie Difficile : 50 sec</span></div>
+        <div class="diff-sub" id="dc-moyen-sub">10 questions · 60 sec · 90% requis<br>⚡ 3 réponses rapides = +0.50€</div>
       </div>
       <div class="diff-reward">1€</div>
     </div>
@@ -553,7 +553,7 @@ h1 .maths{color:var(--accent);}
       <div class="diff-dot"></div>
       <div class="diff-info">
         <div class="diff-label">Difficile</div>
-        <div class="diff-sub" id="dc-diff-sub">12 questions · 40 sec · 100% requis<br>⚡ 3 réponses rapides = +0.50€<br><span style="font-size:.75em;opacity:.8">⚠️ Géométrie Difficile : 50 sec</span></div>
+        <div class="diff-sub" id="dc-diff-sub">12 questions · 60 sec · 100% requis<br>⚡ 3 réponses rapides = +0.50€</div>
       </div>
       <div class="diff-reward">2€</div>
     </div>
@@ -566,7 +566,7 @@ h1 .maths{color:var(--accent);}
   <div class="topbar">
     <div class="stat-box"><div class="sl">Total pts</div><div class="sv b" id="s-score">0</div></div>
     <div class="stat-box"><div class="sl">Série</div><div class="sv g" id="s-streak">0</div></div>
-    <div class="stat-box"><div class="sl">Vies</div><div class="sv r" id="s-lives">❤❤❤</div></div>
+    <div class="stat-box"><div class="sl">Erreurs</div><div class="sv r" id="s-lives">❌ 0</div></div>
     <div class="stat-box"><div class="sl">⚡ Bonus</div><div class="sv y" id="s-bonus">0/3</div></div>
     <div class="timer-box">
       <div class="sl">Sec</div>
@@ -600,6 +600,7 @@ h1 .maths{color:var(--accent);}
   <div class="result-score" id="res-score">0 pts</div>
   <div class="result-stats">
     <div class="rs"><div class="rsl">Correctes</div><div class="rsv" id="rs-ok" style="color:var(--accent)">0/0</div></div>
+    <div class="rs"><div class="rsl">Erreurs</div><div class="rsv" id="rs-wrong" style="color:var(--red)">0</div></div>
     <div class="rs"><div class="rsl">Temps</div><div class="rsv" id="rs-time" style="color:var(--robux)">--:--</div></div>
     <div class="rs"><div class="rsl">Meill. série</div><div class="rsv" id="rs-streak" style="color:var(--accent2)">0</div></div>
     <div class="rs"><div class="rsl">Gagné</div><div class="rsv" id="rs-earned" style="color:var(--robux)">0€</div></div>
@@ -666,7 +667,7 @@ const PUNISHMENTS=[
 
 // ── PERSISTENT STATE ──────────────────────────────
 let curCat=null,curDiff=null;
-let qNum=0,score=0,streak=0,maxStreak=0,lives=3;
+let qNum=0,score=0,streak=0,maxStreak=0,wrongTotal=0;
 let correct=0,answered=false;
 let timerInt=null,timeLeft=20,qStartTime=0;
 let _start=Date.now();
@@ -675,11 +676,12 @@ let speedBonusCount=0,facileAllFast=true;
 let wrongCounts={};
 let consecutiveWrong=0;
 let _retryQ=null;
+let permanentWrong=0;
 
 const DIFF_CONFIG={
-  facile:{qs:8,time:25,reward:0.5,passRatio:1.0},
-  moyen:{qs:10,time:30,reward:1,passRatio:1.0},
-  difficile:{qs:12,time:40,reward:2,passRatio:1.0}
+  facile:{qs:8,time:60,reward:0.5,passRatio:0.9},
+  moyen:{qs:10,time:60,reward:1,passRatio:0.9},
+  difficile:{qs:12,time:60,reward:2,passRatio:1.0}
 };
 
 const rand=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
@@ -1254,21 +1256,17 @@ function selectCat(id){
   document.getElementById('diff-icon').textContent=curCat.icon;
   document.getElementById('diff-name').textContent=curCat.name;
   document.getElementById('diff-desc').textContent=curCat.desc;
-  // update diff card times based on category
-  const isSpecial=(id==='ge');
-  const mTime=isSpecial?'30':'30';
-  const dTime=isSpecial?'50':'30';
-  const dLabel=isSpecial?'<span style="color:var(--accent);font-weight:700">50 sec</span>':'30 sec';
-  document.getElementById('dc-moyen-sub').innerHTML='10 questions · '+mTime+' sec · 100% requis<br>⚡ 3 réponses rapides = +0.50€';
-  document.getElementById('dc-diff-sub').innerHTML='12 questions · '+dLabel+' · 100% requis<br>⚡ 3 réponses rapides = +0.50€'+(isSpecial?'<br><span style="font-size:.75em;opacity:.85">⏱ Géométrie : 50 sec</span>':'');
+  document.getElementById('dc-moyen-sub').innerHTML='10 questions · 60 sec · 90% requis<br>⚡ 3 réponses rapides = +0.50€';
+  document.getElementById('dc-diff-sub').innerHTML='12 questions · 60 sec · 100% requis<br>⚡ 3 réponses rapides = +0.50€';
   show('diff');
 }
 function startGame(diff){
-  curDiff=diff;qNum=0;score=0;streak=0;maxStreak=0;lives=3;correct=0;answered=false;
+  curDiff=diff;qNum=0;score=0;streak=0;maxStreak=0;wrongTotal=0;correct=0;answered=false;
   speedBonusCount=0;facileAllFast=true;_start=Date.now();curCoupon=null;consecutiveWrong=0;
+  wrongCounts={};_retryQ=null;permanentWrong=0;
   document.getElementById('s-score').textContent=totalScore;
   document.getElementById('s-streak').textContent=0;
-  document.getElementById('s-lives').textContent='❤❤❤';
+  document.getElementById('s-lives').textContent='❌ 0';
   document.getElementById('s-bonus').textContent='0/3';
   const dp=document.getElementById('dpill');
   dp.className='diff-pill '+(diff==='facile'?'dp-f':diff==='moyen'?'dp-m':'dp-d');
@@ -1335,7 +1333,7 @@ function renderQ(q,isRetry=false){
     b.innerHTML=q.fmt(ch.v);b.onclick=()=>pickAns(ch.ok,b,q);g.appendChild(b);
   });
   updateRetryBar(q.subtype);
-  var catTime=(curCat&&curCat.id==="ge"&&curDiff==="difficile")?50:cfg.time;
+  var catTime=cfg.time;
   startTimer(catTime);
 }
 
@@ -1403,7 +1401,7 @@ function closeBonusCard(){document.getElementById('bonus-ol').classList.remove('
 
 function doWrong(q,timeout=false){
   streak=0;document.getElementById('s-streak').textContent=0;
-  lives--;document.getElementById('s-lives').textContent=['❤❤❤','❤❤','❤','💀'][3-Math.max(0,lives)];
+  wrongTotal++;document.getElementById('s-lives').textContent='❌ '+wrongTotal;
   if(curDiff==='facile')facileAllFast=false;
   consecutiveWrong++;
   if(consecutiveWrong>=2&&totalEarned>0){
@@ -1413,9 +1411,15 @@ function doWrong(q,timeout=false){
     consecutiveWrong=0;
   }
   const cnt=q?incWC(q.subtype):0;
+  if(_retryQ)permanentWrong++;
   showExpl(q,cnt,timeout,cnt>=2?cnt:0);
 }
 
+function showDeductNotice(){
+  var bal=document.getElementById('deduct-balance');
+  if(bal)bal.textContent='Solde restant : '+totalEarned.toFixed(2)+'€';
+  document.getElementById('deduct-ol').classList.add('show');
+}
 const EXPL_LINKS={
   add:{label:"Addition de fractions \u2014 YouTube \ud83c\uddeb\ud83c\uddf7",url:"https://www.youtube.com/results?search_query=addition+fractions+denominateur+commun+4eme"},
   aire:{label:"Calcul d'aires \u2014 Khan Academy \ud83c\uddeb\ud83c\uddf7",url:"https://www.youtube.com/results?search_query=calcul+aire+rectangle+triangle+cercle+4eme"},
@@ -1471,9 +1475,9 @@ function showExpl(q,wrongCnt,isTimeout,punCnt){
 }
 function closeExpl(){
   document.getElementById('expl-ol').classList.remove('show');
-  if(lives<=0){endGame();return;}
   if(window._pendingPun>=2){
     window._pendingPun=0;
+    _retryQ=null;
     showPunishment(2);
     return;
   }
@@ -1486,15 +1490,8 @@ function closeExpl(){
 
 function showPunishment(cnt){
   let pool;
-  if(totalEarned<=0){
-    // no balance: escalate to device ban at cnt>=3
-    if(cnt>=3) pool=PUNISHMENTS.filter(p=>p.sev>=3);
-    else pool=PUNISHMENTS.filter(p=>p.sev<=2);
-  } else {
-    // has balance: chores only (device ban only at cnt>=4)
-    if(cnt>=4) pool=PUNISHMENTS.filter(p=>p.sev>=3);
-    else pool=PUNISHMENTS.filter(p=>p.sev<=2);
-  }
+  if(cnt>=3) pool=PUNISHMENTS.filter(p=>p.sev>=3);
+  else pool=PUNISHMENTS.filter(p=>p.sev<=2);
   if(!pool||pool.length===0) pool=PUNISHMENTS.filter(p=>p.sev<=2);
   const pun=pick(pool)||PUNISHMENTS[0];
   document.getElementById('pun-icon').textContent=pun.icon;
@@ -1504,12 +1501,10 @@ function showPunishment(cnt){
 }
 function closePunishment(){
   document.getElementById('pun-ol').classList.remove('show');
-  if(lives<=0){endGame();return;}
   document.getElementById('nxt-btn').classList.add('on');
 }
 function nextQ(){
   document.getElementById('arya-ol').classList.remove('show');
-  if(lives<=0){endGame();return;}
   const cfg=DIFF_CONFIG[curDiff];
   if(qNum>=cfg.qs){endGame();return;}
   qNum++;
@@ -1519,7 +1514,7 @@ function nextQ(){
 function endGame(){
   clearInterval(timerInt);
   const cfg=DIFF_CONFIG[curDiff];
-  const ratio=correct/cfg.qs;const passed=ratio>=cfg.passRatio;
+  const ratio=correct/cfg.qs;const passed=ratio>=cfg.passRatio&&permanentWrong===0;
   const reward=passed?cfg.reward:0;
   let facileBonus=0;
   if(curDiff==='facile'&&facileAllFast&&correct===cfg.qs){
@@ -1533,6 +1528,8 @@ function endGame(){
   document.getElementById('res-title').textContent=passed?(reward>0?'Robux débloqués ! 💎':'Bien joué ! ✓'):'Pas encore... 💪';
   document.getElementById('res-score').textContent=totalScore+' pts';
   document.getElementById('rs-ok').textContent=`${correct}/${cfg.qs} (${Math.round(ratio*100)}%)`;
+  if(document.getElementById('rs-wrong'))document.getElementById('rs-wrong').textContent=`${wrongTotal} erreur(s)`;
+  if(document.getElementById('rs-wrong'))document.getElementById('rs-wrong').textContent=`${wrongTotal} erreur(s)`;
   document.getElementById('rs-time').textContent=`${mm}:${ss}`;
   document.getElementById('rs-streak').textContent=maxStreak;
   const totalReward=+(reward+facileBonus).toFixed(2);
